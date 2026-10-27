@@ -88,6 +88,16 @@ export function Footer() {
         <p className="max-w-xl text-xs leading-relaxed text-faint">
           An unofficial fan project, not affiliated with SpaceX. Telemetry is reconstructed from public webcasts and reports; images
           belong to their credited owners. Flight data is offered as-is for learning about the Starship program.
+          <br />
+          3D models:{' '}
+          <a className="underline hover:text-white" href="https://sketchfab.com/3d-models/spacex-starship-block-3-6f6c6f88a3eb4b4d822fdca66733fbb2" target="_blank" rel="noreferrer">
+            “SpaceX Starship Block 3”
+          </a>{' '}
+          by Clarence365,{' '}
+          <a className="underline hover:text-white" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">
+            CC BY 4.0
+          </a>
+          , modified.
         </p>
         <div className="flex gap-6">
           <Link to="/glossary" className="label hover:text-white">
