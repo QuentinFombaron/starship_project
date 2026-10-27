@@ -1,0 +1,61 @@
+{
+  "id": "flight-15",
+  "number": 15,
+  "name": "Flight 15",
+  "launchTime": "2026-11-08T12:00:00Z",
+  "outcome": "scheduled",
+  "launchSite": {
+    "name": "Starbase, Texas",
+    "pad": "OLP-2",
+    "position": {
+      "lat": 25.9959,
+      "lon": -97.154
+    }
+  },
+  "vehicles": {
+    "booster": {
+      "id": "B22",
+      "block": "Block 3"
+    },
+    "ship": {
+      "id": "S42",
+      "block": "Block 3"
+    }
+  },
+  "summary": "Flight 15 is expected to fly Booster 22 and Ship 42 from OLP-2 no earlier than November 8, 2026, a date from FAA planning material that SpaceX has not confirmed. Elon Musk has said SpaceX plans to catch both the booster and the ship with the tower arms, which would be the first catch of a Starship upper stage. Musk put the odds of a successful ship catch at about 50 to 60 percent.",
+  "highlights": [
+    "Expected first attempt to catch a Starship upper stage",
+    "Booster catch planned, the first since Flight 8",
+    "Ship 42 lifted by the Pad 2 arms during ground tests in September 2026",
+    "Fourth Block 3 stack"
+  ],
+  "objectives": [
+    {
+      "label": "Booster tower catch",
+      "status": "pending"
+    },
+    {
+      "label": "Ship tower catch",
+      "status": "pending",
+      "note": "Stated by Elon Musk; not an official SpaceX mission profile yet."
+    }
+  ],
+  "sources": [
+    {
+      "title": "List of Starship launches",
+      "url": "https://en.wikipedia.org/wiki/List_of_Starship_launches",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "Starship Flight 15 launch date and how to watch",
+      "url": "https://www.spacelaunchschedule.com/news/starship-flight-15-launch-date-how-to-watch/",
+      "publisher": "Space Launch Schedule"
+    },
+    {
+      "title": "SpaceX Starship Flight 15: November dual catch",
+      "url": "https://tech-insider.org/spacex-starship-flight-15-november-dual-catch-2026/",
+      "publisher": "Tech Insider"
+    }
+  ],
+  "hasReplay": false
+}

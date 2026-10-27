@@ -1,0 +1,32 @@
+{
+  "id": "S33",
+  "type": "ship",
+  "block": "Block 2",
+  "status": "destroyed",
+  "flights": [
+    7
+  ],
+  "summary": "Ship 33 was the first Block 2 ship. On Flight 7 propellant leaks and fires in its aft section caused engine shutdowns and loss of the vehicle shortly before engine cutoff.",
+  "history": [
+    {
+      "date": "2024-10-30",
+      "event": "First cryogenic proof tests"
+    },
+    {
+      "date": "2024-12-15",
+      "event": "Six-engine static fire, the first for a Block 2 ship"
+    },
+    {
+      "date": "2024-12-16",
+      "event": "Single-engine static fire simulating an in-space burn"
+    },
+    {
+      "date": "2025-01-09",
+      "event": "Stacked on Booster 14"
+    },
+    {
+      "date": "2025-01-16",
+      "event": "Launched on Flight 7; lost during ascent"
+    }
+  ]
+}

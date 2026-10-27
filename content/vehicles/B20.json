@@ -1,0 +1,28 @@
+{
+  "id": "B20",
+  "type": "booster",
+  "block": "Block 3",
+  "status": "destroyed",
+  "flights": [
+    13
+  ],
+  "summary": "Booster 20 flew on Flight 13. It cut its boostback short and lit only 10 of 13 engines for the landing burn, so it hit the Gulf of Mexico hard and was destroyed.",
+  "history": [
+    {
+      "date": "2026-06-06",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2026-07-10",
+      "event": "33-engine static fire of about 25 seconds, the longest Super Heavy static fire to that date"
+    },
+    {
+      "date": "2026-07-22",
+      "event": "Propellant dump test after engine replacements"
+    },
+    {
+      "date": "2026-07-24",
+      "event": "Launched on Flight 13; destroyed on hard splashdown in the Gulf"
+    }
+  ]
+}

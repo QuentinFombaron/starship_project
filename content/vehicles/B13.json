@@ -1,0 +1,32 @@
+{
+  "id": "B13",
+  "type": "booster",
+  "block": "Block 1",
+  "status": "expended",
+  "flights": [
+    6
+  ],
+  "summary": "Booster 13 flew on Flight 6. Its catch was aborted after a tower health check failed, and it diverted to a soft splashdown in the Gulf of Mexico.",
+  "history": [
+    {
+      "date": "2024-04-27",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2024-10-25",
+      "event": "33-engine static fire"
+    },
+    {
+      "date": "2024-11-14",
+      "event": "Ship 31 stacked on top"
+    },
+    {
+      "date": "2024-11-17",
+      "event": "Partial wet dress rehearsal"
+    },
+    {
+      "date": "2024-11-19",
+      "event": "Launched on Flight 6; catch aborted, soft splashdown in the Gulf"
+    }
+  ]
+}

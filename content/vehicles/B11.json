@@ -1,0 +1,32 @@
+{
+  "id": "B11",
+  "type": "booster",
+  "block": "Block 1",
+  "status": "expended",
+  "flights": [
+    4
+  ],
+  "summary": "Booster 11 was the first Super Heavy to complete a landing burn and make a soft splashdown, in the Gulf of Mexico on Flight 4. It tipped over and broke apart in the water as expected.",
+  "history": [
+    {
+      "date": "2023-10-13",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2024-04-05",
+      "event": "33-engine static fire"
+    },
+    {
+      "date": "2024-05-15",
+      "event": "Ship 29 stacked on top"
+    },
+    {
+      "date": "2024-05-20",
+      "event": "Wet dress rehearsal"
+    },
+    {
+      "date": "2024-06-06",
+      "event": "Launched on Flight 4; soft splashdown in the Gulf of Mexico"
+    }
+  ]
+}

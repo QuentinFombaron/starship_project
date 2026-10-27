@@ -1,0 +1,92 @@
+[
+  {
+    "src": "https://sxcontent9668.azureedge.us/cms-assets/assets/Flight_14_Website_Desktop_5_4f66593f23.jpg",
+    "thumb": "https://sxcontent9668.azureedge.us/cms-assets/assets/Flight_14_Website_Mobile_3_fb8b462f51.jpg",
+    "caption": "Liftoff of Super Heavy B21 and Ship 41 from Pad 2",
+    "credit": "SpaceX",
+    "license": "All rights reserved, shown for non-commercial fan use",
+    "page": "https://www.spacex.com/launches/starship-flight-14",
+    "t": 0
+  },
+  {
+    "src": "https://sxcontent9668.azureedge.us/cms-assets/assets/Flight_14_Website_Desktop_3_117bbcce82.jpg",
+    "thumb": "https://sxcontent9668.azureedge.us/cms-assets/assets/Flight_14_Website_Mobile_2_c6d0642687.jpg",
+    "caption": "The full stack on Pad 2 at twilight, with the Pad 1 tower behind",
+    "credit": "SpaceX",
+    "license": "All rights reserved, shown for non-commercial fan use",
+    "page": "https://www.spacex.com/launches/starship-flight-14",
+    "t": -60
+  },
+  {
+    "src": "https://sxcontent9668.azureedge.us/cms-assets/assets/Flight_14_Deploy_092826_2f8726202b.png",
+    "thumb": "https://sxcontent9668.azureedge.us/cms-assets/assets/Flight_14_Deploy_092826_mobile_ed5fe90506.jpg",
+    "caption": "Onboard view: Starlink V3 satellites drifting away above Earth's limb",
+    "credit": "SpaceX",
+    "license": "All rights reserved, shown for non-commercial fan use",
+    "page": "https://www.spacex.com/launches/starship-flight-14",
+    "t": 2400
+  },
+  {
+    "src": "https://sxcontent9668.azureedge.us/cms-assets/assets/Test_Flight_14_Trajectory_090226_web_2_56b3b513b2.png",
+    "caption": "Official Flight 14 trajectory graphic (nominal plan)",
+    "credit": "SpaceX",
+    "license": "All rights reserved, shown for non-commercial fan use",
+    "page": "https://www.spacex.com/launches/starship-flight-14"
+  },
+  {
+    "src": "https://media.pubninja.com/galleries/brand-7/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/slides/s6947/full.webp",
+    "caption": "Moments before launch",
+    "credit": "SpaceX via Starlust",
+    "license": "All rights reserved",
+    "page": "https://starlust.org/gallery/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/",
+    "t": -20
+  },
+  {
+    "src": "https://media.pubninja.com/galleries/brand-7/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/slides/s6948/full.webp",
+    "caption": "Starship achieves liftoff",
+    "credit": "SpaceX via Starlust",
+    "license": "All rights reserved",
+    "page": "https://starlust.org/gallery/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/",
+    "t": 5
+  },
+  {
+    "src": "https://media.pubninja.com/galleries/brand-7/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/slides/s6949/full.webp",
+    "caption": "Starship in orbit",
+    "credit": "SpaceX via Starlust",
+    "license": "All rights reserved",
+    "page": "https://starlust.org/gallery/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/",
+    "t": 1600
+  },
+  {
+    "src": "https://media.pubninja.com/galleries/brand-7/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/slides/s6950/full.webp",
+    "caption": "Payload deployment complete",
+    "credit": "SpaceX via Starlust",
+    "license": "All rights reserved",
+    "page": "https://starlust.org/gallery/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/",
+    "t": 3960
+  },
+  {
+    "src": "https://media.pubninja.com/galleries/brand-7/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/slides/s6952/full.webp",
+    "caption": "Ship 41 bursts into flames after splashdown",
+    "credit": "SpaceX via Starlust",
+    "license": "All rights reserved",
+    "page": "https://starlust.org/gallery/spacex-starship-flight-14-striking-images-from-the-rocket-s-first-orbital-mission-mulujt0k/",
+    "t": 11316
+  },
+  {
+    "src": "https://www.LeonardDavid.com/wp-content/uploads/2026/09/starship-starlink-deploy.jpg",
+    "caption": "Starlink V3 deployment",
+    "credit": "SpaceX via Leonard David",
+    "license": "All rights reserved",
+    "page": "https://www.leonarddavid.com/spacex-report-starship-flight-14-overview/",
+    "t": 2200
+  },
+  {
+    "src": "https://www.teslaoracle.com/wp-content/uploads/2026/09/Flight-14-Starship-QD-Arm-Aerial-1024x576.jpg",
+    "caption": "Aerial view of the Flight 14 stack and QD arm at Pad 2",
+    "credit": "Tesla Oracle",
+    "license": "All rights reserved",
+    "page": "https://www.teslaoracle.com/2026/09/28/watch-flight-14-starship-launch-live-streams-and-get-live-updates/",
+    "t": -300
+  }
+]

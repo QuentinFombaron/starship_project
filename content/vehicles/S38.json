@@ -1,0 +1,28 @@
+{
+  "id": "S38",
+  "type": "ship",
+  "block": "Block 2",
+  "status": "expended",
+  "flights": [
+    11
+  ],
+  "summary": "Ship 38 was the final Block 2 ship. On Flight 11 it deployed eight Starlink simulators, relit a Raptor, and made an on-target splashdown in the Indian Ocean.",
+  "history": [
+    {
+      "date": "2025-07-30",
+      "event": "Cryogenic proof tests"
+    },
+    {
+      "date": "2025-09-22",
+      "event": "Static fire on the OLP-1 launch mount"
+    },
+    {
+      "date": "2025-10-11",
+      "event": "Stacked on Booster 15"
+    },
+    {
+      "date": "2025-10-13",
+      "event": "Launched on Flight 11; controlled splashdown in the Indian Ocean"
+    }
+  ]
+}

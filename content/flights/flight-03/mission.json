@@ -1,0 +1,111 @@
+{
+  "id": "flight-03",
+  "number": 3,
+  "name": "Flight 3",
+  "launchTime": "2024-03-14T13:25:00Z",
+  "outcome": "partial",
+  "launchSite": {
+    "name": "Starbase, Texas",
+    "pad": "OLP-1",
+    "position": {
+      "lat": 25.9967,
+      "lon": -97.1572
+    }
+  },
+  "vehicles": {
+    "booster": {
+      "id": "B10",
+      "block": "Block 1"
+    },
+    "ship": {
+      "id": "S28",
+      "block": "Block 1"
+    }
+  },
+  "summary": "Ship 28 completed its full-duration ascent burn and reached its planned trajectory for the first time, then opened and closed its payload door and performed an in-space propellant transfer demonstration. The planned in-space Raptor relight was skipped after the ship lost roll control, which SpaceX traced to stuck roll-control valves, and the ship broke up during reentry over the Indian Ocean about 49 minutes after launch. Booster 10 lost engines during boostback to LOX filter blockages and was destroyed at about 462 m during its landing burn over the Gulf of Mexico.",
+  "highlights": [
+    "First full-duration ship burn to the planned trajectory",
+    "Payload door open/close test",
+    "In-space propellant transfer demonstration",
+    "Raptor relight skipped after loss of roll control",
+    "Ship lost during reentry around 65 km altitude",
+    "Booster lit only 2 of 13 engines for its landing burn"
+  ],
+  "objectives": [
+    {
+      "label": "Ship full-duration ascent burn",
+      "status": "achieved"
+    },
+    {
+      "label": "Payload door open and close",
+      "status": "achieved",
+      "note": "Reported as successful by SpaceX."
+    },
+    {
+      "label": "Propellant transfer demonstration",
+      "status": "achieved"
+    },
+    {
+      "label": "In-space Raptor relight",
+      "status": "not-attempted",
+      "note": "Skipped due to loss of roll control."
+    },
+    {
+      "label": "Ship controlled reentry and splashdown",
+      "status": "failed"
+    },
+    {
+      "label": "Booster landing burn and Gulf splashdown",
+      "status": "failed"
+    }
+  ],
+  "orbit": {
+    "perigeeKm": -54,
+    "apogeeKm": 234,
+    "inclinationDeg": 26.5,
+    "orbital": false
+  },
+  "boosterFate": "Lost at about 462 m altitude during the landing burn over the Gulf of Mexico (telemetry lost around T+7:01).",
+  "shipFate": "Broke up during reentry over the Indian Ocean; telemetry lost at T+49:41 at about 65 km.",
+  "durationSec": 2981,
+  "stats": [
+    {
+      "label": "Apogee",
+      "value": "~234 km"
+    },
+    {
+      "label": "Ship flight time",
+      "value": "49 min 41 s"
+    },
+    {
+      "label": "Booster landing engines lit",
+      "value": "2 of 13"
+    },
+    {
+      "label": "Booster loss altitude",
+      "value": "~462 m"
+    },
+    {
+      "label": "Ship loss altitude",
+      "value": "~65 km"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Starship flight test 3",
+      "url": "https://en.wikipedia.org/wiki/Starship_flight_test_3",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "Starship Flight 3",
+      "url": "https://www.spacex.com/launches/mission/?missionId=starship-flight-3",
+      "publisher": "SpaceX"
+    },
+    {
+      "title": "List of Starship launches",
+      "url": "https://en.wikipedia.org/wiki/List_of_Starship_launches",
+      "publisher": "Wikipedia"
+    }
+  ],
+  "hasReplay": false
+}

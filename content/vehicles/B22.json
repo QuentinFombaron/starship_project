@@ -1,0 +1,24 @@
+{
+  "id": "B22",
+  "type": "booster",
+  "block": "Block 3",
+  "status": "active",
+  "flights": [
+    15
+  ],
+  "summary": "Booster 22 is assigned to Flight 15, where SpaceX is expected to attempt a tower catch.",
+  "history": [
+    {
+      "date": "2026-09-09",
+      "event": "Cryogenic proof test 1 at Massey's"
+    },
+    {
+      "date": "2026-09-10",
+      "event": "Cryogenic proof test 2"
+    },
+    {
+      "date": "2026-10-25",
+      "event": "Full-duration 33-engine static fire of about 15 seconds at OLP-2"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "S30",
+  "type": "ship",
+  "block": "Block 1",
+  "status": "expended",
+  "flights": [
+    5
+  ],
+  "summary": "Ship 30 flew on Flight 5 and made the first precise, on-target Starship splashdown, next to a buoy in the Indian Ocean.",
+  "history": [
+    {
+      "date": "2024-01-04",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2024-05-08",
+      "event": "Six-engine static fire"
+    },
+    {
+      "date": "2024-07-26",
+      "event": "Six-engine static fire at Massey's after a Raptor Vacuum swap"
+    },
+    {
+      "date": "2024-09-21",
+      "event": "Stacked on Booster 12"
+    },
+    {
+      "date": "2024-10-13",
+      "event": "Launched on Flight 5; controlled splashdown in the Indian Ocean"
+    }
+  ]
+}

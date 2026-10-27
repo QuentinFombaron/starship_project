@@ -1,0 +1,28 @@
+{
+  "id": "S37",
+  "type": "ship",
+  "block": "Block 2",
+  "status": "expended",
+  "flights": [
+    10
+  ],
+  "summary": "Ship 37 was the first ship to deploy Starlink simulators. On Flight 10 it relit a Raptor in space and splashed down on target northwest of Australia despite aft skirt damage.",
+  "history": [
+    {
+      "date": "2025-05-30",
+      "event": "Cryogenic proof tests"
+    },
+    {
+      "date": "2025-07-31",
+      "event": "Single-engine static fire, the first ship static fire on the orbital launch mount"
+    },
+    {
+      "date": "2025-08-01",
+      "event": "Six-engine static fire"
+    },
+    {
+      "date": "2025-08-26",
+      "event": "Launched on Flight 10; controlled splashdown in the Indian Ocean"
+    }
+  ]
+}

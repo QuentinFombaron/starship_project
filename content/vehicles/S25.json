@@ -1,0 +1,32 @@
+{
+  "id": "S25",
+  "type": "ship",
+  "block": "Block 1",
+  "status": "destroyed",
+  "flights": [
+    2
+  ],
+  "summary": "Ship 25 was the first Starship to reach space and performed the first hot-staging separation. It was destroyed by its flight safety system about 8 minutes into Flight 2 after a fire during a liquid oxygen vent.",
+  "history": [
+    {
+      "date": "2022-11-01",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2023-03-21",
+      "event": "First Starship cryogenic proof test at the Massey's test site"
+    },
+    {
+      "date": "2023-06-27",
+      "event": "Six-engine static fire"
+    },
+    {
+      "date": "2023-09-05",
+      "event": "Stacked on Booster 9"
+    },
+    {
+      "date": "2023-11-18",
+      "event": "Launched on Flight 2; reached space, then destroyed by flight termination"
+    }
+  ]
+}

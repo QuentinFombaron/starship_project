@@ -1,0 +1,40 @@
+{
+  "id": "B19",
+  "type": "booster",
+  "block": "Block 3",
+  "status": "destroyed",
+  "flights": [
+    12
+  ],
+  "summary": "Booster 19 was the first Block 3 Super Heavy to fly, replacing Booster 18, which was lost in ground testing. On Flight 12 its boostback and landing burns failed and it hit the Gulf of Mexico.",
+  "history": [
+    {
+      "date": "2026-02-03",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2026-03-16",
+      "event": "10-engine static fire, the first at OLP-2 and the first Raptor 3 static fire on a booster"
+    },
+    {
+      "date": "2026-04-15",
+      "event": "33-engine static fire, cut short by a flame diverter issue"
+    },
+    {
+      "date": "2026-05-07",
+      "event": "Full-duration 33-engine static fire"
+    },
+    {
+      "date": "2026-05-11",
+      "event": "Wet dress rehearsal with Ship 39"
+    },
+    {
+      "date": "2026-05-21",
+      "event": "Flight 12 launch attempt scrubbed"
+    },
+    {
+      "date": "2026-05-22",
+      "event": "Launched on Flight 12; lost after failed boostback and landing burns"
+    }
+  ]
+}

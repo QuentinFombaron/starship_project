@@ -1,0 +1,160 @@
+{
+  "id": "flight-14",
+  "number": 14,
+  "name": "Flight 14",
+  "launchTime": "2026-09-28T12:48:59Z",
+  "outcome": "success",
+  "launchSite": {
+    "name": "Starbase, Texas",
+    "pad": "OLP-2",
+    "position": {
+      "lat": 25.9959,
+      "lon": -97.154
+    }
+  },
+  "vehicles": {
+    "booster": {
+      "id": "B21",
+      "block": "Block 3"
+    },
+    "ship": {
+      "id": "S41",
+      "block": "Block 3"
+    }
+  },
+  "summary": "Starship's first orbital flight. Super Heavy B21 and Ship 41, both Block 3 vehicles, lifted off from Starbase's Pad 2. A booster engine went out on ascent and one of the ship's Raptor Vacuum engines shut down early. Mission control first ruled out orbit, then reversed the call: Ship 41 reached a 262 × 275 km orbit, deployed 26 Starlink V3 satellites, then deorbited early and splashed down north of Hawaii.",
+  "highlights": [
+    "First Starship to reach orbit, 18 years to the day after Falcon 1's first orbit",
+    "First operational payload: 26 Starlink V3 satellites (~26 Tbps of capacity)",
+    "First deorbit burn and first header-tank-fed in-space Raptor burn",
+    "First live HD video from orbit relayed by Starlink",
+    "Reflown heat-shield tiles from Ship 40",
+    "Ship 41 splashdown several hundred km north of Hawaii after 3 h 08 min"
+  ],
+  "objectives": [
+    {
+      "label": "Reach low Earth orbit",
+      "status": "achieved",
+      "note": "After an initial no-go, then a go"
+    },
+    {
+      "label": "Deploy Starlink V3 satellites",
+      "status": "achieved",
+      "note": "26 of 26 released"
+    },
+    {
+      "label": "Booster boostback and landing burn",
+      "status": "partial",
+      "note": "31/33 and 11/13 engines relit"
+    },
+    {
+      "label": "Booster flight termination system demo",
+      "status": "achieved"
+    },
+    {
+      "label": "First in-space deorbit burn",
+      "status": "achieved"
+    },
+    {
+      "label": "Six-orbit, ~10 hour mission ending west of Chile",
+      "status": "not-attempted",
+      "note": "Shortened to ~3 hours"
+    },
+    {
+      "label": "Controlled reentry and splashdown",
+      "status": "achieved",
+      "note": "Northern Pacific contingency zone"
+    }
+  ],
+  "payload": {
+    "name": "Starlink Group 31-1",
+    "count": 26,
+    "description": "26 Starlink V3 satellites, three of them with cameras to image Ship 41's heat shield in orbit."
+  },
+  "orbit": {
+    "perigeeKm": 262,
+    "apogeeKm": 275,
+    "inclinationDeg": 30.5,
+    "orbital": true
+  },
+  "boosterFate": "Soft splashdown in the Gulf a few miles off the Texas coast; flight termination system demonstrated",
+  "shipFate": "Splashdown several hundred km north of Hawaii; tipped over and exploded seconds later",
+  "boosterLanding": {
+    "lat": 26.07,
+    "lon": -96.81
+  },
+  "shipLanding": {
+    "lat": 24.6,
+    "lon": -148.5
+  },
+  "durationSec": 11310,
+  "stats": [
+    {
+      "label": "Orbit",
+      "value": "262 × 275 km"
+    },
+    {
+      "label": "Inclination",
+      "value": "30.5°"
+    },
+    {
+      "label": "Satellites deployed",
+      "value": "26 Starlink V3"
+    },
+    {
+      "label": "Duration",
+      "value": "3 h 08 min 30 s"
+    },
+    {
+      "label": "Booster engines lit (boostback)",
+      "value": "31 / 33"
+    },
+    {
+      "label": "Booster engines lit (landing)",
+      "value": "11 / 13"
+    }
+  ],
+  "webcast": {
+    "youtubeId": "lw0nj_XiUoU",
+    "title": "FULL MISSION! SpaceX Starship Flight 14"
+  },
+  "sources": [
+    {
+      "title": "Starship's Fourteenth Flight Test (mission page + recap)",
+      "url": "https://www.spacex.com/launches/starship-flight-14",
+      "publisher": "SpaceX"
+    },
+    {
+      "title": "Starship achieves orbit for the first time",
+      "url": "https://spacepolicyonline.com/news/starship-achieves-orbit-for-the-first-time/",
+      "publisher": "SpacePolicyOnline"
+    },
+    {
+      "title": "Starship returns to Earth, splashes down north of Hawaii after three-hour flight",
+      "url": "https://spaceflightnow.com/2026/09/28/starship-returns-to-earth-rocket-splashes-down-north-of-hawaii-after-three-hour-flight/",
+      "publisher": "Spaceflight Now"
+    },
+    {
+      "title": "Starship reaches orbit on 14th test flight",
+      "url": "https://www.astronomy.com/whats-launching-this-week/starship-reaches-orbit-on-14th-test-flight/",
+      "publisher": "Astronomy"
+    },
+    {
+      "title": "The Space Review on Flight 14",
+      "url": "https://www.thespacereview.com/article/5324/1",
+      "publisher": "The Space Review"
+    },
+    {
+      "title": "Starship flight 14",
+      "url": "https://en.wikipedia.org/wiki/Starship_flight_14",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "SpaceX's Starship launches on first orbital mission from Texas",
+      "url": "https://www.npr.org/2026/09/28/nx-s1-5983418/spacex-starship-first-orbital-flight-14-nasa",
+      "publisher": "NPR"
+    }
+  ],
+  "hasReplay": true,
+  "heroImage": "https://sxcontent9668.azureedge.us/cms-assets/assets/Flight_14_Website_Desktop_5_4f66593f23.jpg"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "S28",
+  "type": "ship",
+  "block": "Block 1",
+  "status": "destroyed",
+  "flights": [
+    3
+  ],
+  "summary": "Ship 28 was the first Starship to complete its full ascent burn. It demonstrated a payload door cycle and a propellant transfer, then lost roll control and broke up during reentry over the Indian Ocean.",
+  "history": [
+    {
+      "date": "2023-07-28",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2023-12-20",
+      "event": "Six-engine static fire"
+    },
+    {
+      "date": "2023-12-29",
+      "event": "Single-engine static fire"
+    },
+    {
+      "date": "2024-02-10",
+      "event": "Stacked on Booster 10"
+    },
+    {
+      "date": "2024-03-03",
+      "event": "Wet dress rehearsal completed"
+    },
+    {
+      "date": "2024-03-14",
+      "event": "Launched on Flight 3; broke up during reentry"
+    }
+  ]
+}

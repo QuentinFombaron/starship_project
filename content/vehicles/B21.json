@@ -1,0 +1,32 @@
+{
+  "id": "B21",
+  "type": "booster",
+  "block": "Block 3",
+  "status": "expended",
+  "flights": [
+    14
+  ],
+  "summary": "Booster 21 launched Flight 14, the first orbital Starship flight. It was the first Block 3 booster to complete its boostback and landing burns for a controlled splashdown in the Gulf of Mexico.",
+  "history": [
+    {
+      "date": "2026-07-18",
+      "event": "Cryogenic proof test 1 at Massey's (partial load)"
+    },
+    {
+      "date": "2026-07-19",
+      "event": "Cryogenic proof test 2 (partial load)"
+    },
+    {
+      "date": "2026-07-20",
+      "event": "Cryogenic proof test 3"
+    },
+    {
+      "date": "2026-08-28",
+      "event": "Full-duration 33-engine static fire of about 15 seconds at OLP-2"
+    },
+    {
+      "date": "2026-09-28",
+      "event": "Launched on Flight 14; controlled splashdown in the Gulf of Mexico"
+    }
+  ]
+}

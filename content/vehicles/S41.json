@@ -1,0 +1,36 @@
+{
+  "id": "S41",
+  "type": "ship",
+  "block": "Block 3",
+  "status": "expended",
+  "flights": [
+    14
+  ],
+  "summary": "Ship 41 was the first Starship to reach orbit, on Flight 14, and deployed 26 Starlink V3 satellites. It splashed down in the Pacific Ocean north of Hawaii about three hours after launch.",
+  "history": [
+    {
+      "date": "2026-06-29",
+      "event": "Cryogenic proof test 1 at Massey's"
+    },
+    {
+      "date": "2026-06-30",
+      "event": "Cryogenic proof test 2"
+    },
+    {
+      "date": "2026-08-19",
+      "event": "Rolled to Massey's for engine testing"
+    },
+    {
+      "date": "2026-08-20",
+      "event": "Single-engine static fire demonstrating a deorbit burn"
+    },
+    {
+      "date": "2026-08-21",
+      "event": "Six-engine static fire of about 60 seconds"
+    },
+    {
+      "date": "2026-09-28",
+      "event": "Launched on Flight 14; reached orbit, deployed 26 Starlink V3 satellites, splashed down in the Pacific north of Hawaii"
+    }
+  ]
+}

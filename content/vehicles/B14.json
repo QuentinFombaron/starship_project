@@ -1,0 +1,37 @@
+{
+  "id": "B14",
+  "type": "booster",
+  "block": "Block 2",
+  "status": "destroyed",
+  "flights": [
+    7,
+    9
+  ],
+  "summary": "Booster 14 was caught by the tower on Flight 7 and became the first Super Heavy to fly twice, on Flight 9 with 29 flight-proven engines. On its second flight it broke up over the Gulf of Mexico during a descent experiment.",
+  "history": [
+    {
+      "date": "2024-10-05",
+      "event": "Cryogenic proof tests"
+    },
+    {
+      "date": "2024-12-09",
+      "event": "33-engine static fire"
+    },
+    {
+      "date": "2025-01-09",
+      "event": "Ship 33 stacked on top"
+    },
+    {
+      "date": "2025-01-16",
+      "event": "Launched on Flight 7; caught by the OLP-1 tower"
+    },
+    {
+      "date": "2025-04-03",
+      "event": "First static fire of a flight-proven Super Heavy"
+    },
+    {
+      "date": "2025-05-27",
+      "event": "Reflown on Flight 9; broke up over the Gulf near the start of its landing burn"
+    }
+  ]
+}

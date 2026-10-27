@@ -1,0 +1,109 @@
+{
+  "id": "flight-07",
+  "number": 7,
+  "name": "Flight 7",
+  "launchTime": "2025-01-16T22:37:00Z",
+  "outcome": "failure",
+  "launchSite": {
+    "name": "Starbase, Texas",
+    "pad": "OLP-1",
+    "position": {
+      "lat": 25.9967,
+      "lon": -97.1572
+    }
+  },
+  "vehicles": {
+    "booster": {
+      "id": "B14",
+      "block": "Block 2"
+    },
+    "ship": {
+      "id": "S33",
+      "block": "Block 2"
+    }
+  },
+  "summary": "Flight 7 debuted the Block 2 ship and carried 10 Starlink mass simulators. Booster 14 returned to OLP-1 and was caught by the tower at T+6:55, the second successful catch. Ship 33 began losing engines at T+7:39 and telemetry was lost at T+8:26 near 146 km, shortly before planned engine cutoff. SpaceX traced the loss to a harmonic response stronger in flight than in testing, which caused propellant leaks and fires in the aft section, and debris fell around the Turks and Caicos Islands.",
+  "highlights": [
+    "First flight of a Block 2 ship",
+    "Second booster catch (T+6:55)",
+    "Ship lost about 27 seconds before planned engine cutoff",
+    "Debris seen over the Turks and Caicos Islands",
+    "10 Starlink simulators onboard, not deployed"
+  ],
+  "objectives": [
+    {
+      "label": "Booster tower catch",
+      "status": "achieved"
+    },
+    {
+      "label": "Ship ascent to engine cutoff",
+      "status": "failed"
+    },
+    {
+      "label": "Deploy 10 Starlink simulators",
+      "status": "not-attempted"
+    },
+    {
+      "label": "In-space Raptor relight",
+      "status": "not-attempted"
+    },
+    {
+      "label": "Ship reentry and Indian Ocean splashdown",
+      "status": "not-attempted"
+    }
+  ],
+  "payload": {
+    "name": "Starlink mass simulators",
+    "count": 10,
+    "description": "About 20,000 kg of simulators; not deployed."
+  },
+  "orbit": {
+    "perigeeKm": -3170,
+    "apogeeKm": 146,
+    "inclinationDeg": 26.4,
+    "orbital": false
+  },
+  "boosterFate": "Caught by the OLP-1 tower chopsticks at T+6:55. Reflown on Flight 9.",
+  "shipFate": "Telemetry lost at T+8:26 near 146 km; broke up over the Caribbean near the Turks and Caicos Islands.",
+  "boosterLanding": {
+    "lat": 25.9967,
+    "lon": -97.1572
+  },
+  "durationSec": 506,
+  "stats": [
+    {
+      "label": "Booster catch",
+      "value": "Yes, T+6:55"
+    },
+    {
+      "label": "First ship engine out",
+      "value": "T+7:39"
+    },
+    {
+      "label": "Ship telemetry lost",
+      "value": "T+8:26, ~146 km"
+    },
+    {
+      "label": "Payload",
+      "value": "10 Starlink simulators"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Starship flight test 7",
+      "url": "https://en.wikipedia.org/wiki/Starship_flight_test_7",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "Starship Flight 7",
+      "url": "https://www.spacex.com/launches/mission/?missionId=starship-flight-7",
+      "publisher": "SpaceX"
+    },
+    {
+      "title": "Starship Flight 7 report",
+      "url": "https://www.spacex.com/updates/#flight-7-report",
+      "publisher": "SpaceX"
+    }
+  ],
+  "hasReplay": false
+}

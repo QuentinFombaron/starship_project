@@ -1,0 +1,28 @@
+{
+  "id": "B12",
+  "type": "booster",
+  "block": "Block 1",
+  "status": "retired",
+  "flights": [
+    5
+  ],
+  "summary": "Booster 12 was the first Super Heavy caught by the launch tower's chopstick arms, on Flight 5. It was retired after the flight.",
+  "history": [
+    {
+      "date": "2024-01-11",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2024-07-15",
+      "event": "33-engine static fire"
+    },
+    {
+      "date": "2024-09-21",
+      "event": "Ship 30 stacked on top"
+    },
+    {
+      "date": "2024-10-13",
+      "event": "Launched on Flight 5; caught by the OLP-1 tower"
+    }
+  ]
+}

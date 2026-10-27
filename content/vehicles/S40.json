@@ -1,0 +1,40 @@
+{
+  "id": "S40",
+  "type": "ship",
+  "block": "Block 3",
+  "status": "retired",
+  "flights": [
+    13
+  ],
+  "summary": "Ship 40 deployed the first 20 Starlink V3 satellites on Flight 13. It was the first Starship to stay intact after splashdown, and it was recovered and returned to Starbase for engineering analysis.",
+  "history": [
+    {
+      "date": "2026-05-04",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2026-06-25",
+      "event": "Single-engine static fire"
+    },
+    {
+      "date": "2026-07-01",
+      "event": "Six-engine, 60-second static fire"
+    },
+    {
+      "date": "2026-07-24",
+      "event": "Launched on Flight 13; controlled splashdown in the Indian Ocean, stayed intact"
+    },
+    {
+      "date": "2026-08-18",
+      "event": "Recovered and towed to Christmas Island"
+    },
+    {
+      "date": "2026-10-07",
+      "event": "Returned to Brownsville"
+    },
+    {
+      "date": "2026-10-11",
+      "event": "Rolled back to the Starbase production site"
+    }
+  ]
+}

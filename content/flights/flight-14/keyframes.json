@@ -1,0 +1,170 @@
+{
+  "notes": "No HUD telemetry has been published for Flight 14. Ascent anchors follow typical Block 3 profiles; the coast at T+45 min (26,380 km/h, 274 km) and the orbit (262 \u00d7 275 km, 30.5\u00b0) are reported values.",
+  "targets": {
+    "perigeeKm": 262,
+    "apogeeKm": 275,
+    "inclinationDeg": 30.5,
+    "shipBallisticCoeff": 260,
+    "shipLiftToDrag": 0.25
+  },
+  "ship": [
+    {
+      "t": 0,
+      "altKm": 0,
+      "speedKmh": 0
+    },
+    {
+      "t": 10,
+      "altKm": 0.22,
+      "speedKmh": 160
+    },
+    {
+      "t": 20,
+      "altKm": 0.95,
+      "speedKmh": 360
+    },
+    {
+      "t": 30,
+      "altKm": 2.3,
+      "speedKmh": 600
+    },
+    {
+      "t": 45,
+      "altKm": 5.6,
+      "speedKmh": 1050
+    },
+    {
+      "t": 58,
+      "altKm": 10.2,
+      "speedKmh": 1480
+    },
+    {
+      "t": 75,
+      "altKm": 17.5,
+      "speedKmh": 2150
+    },
+    {
+      "t": 90,
+      "altKm": 25.5,
+      "speedKmh": 2800
+    },
+    {
+      "t": 110,
+      "altKm": 37,
+      "speedKmh": 3650
+    },
+    {
+      "t": 125,
+      "altKm": 44,
+      "speedKmh": 4500
+    },
+    {
+      "t": 140,
+      "altKm": 55,
+      "speedKmh": 5650
+    },
+    {
+      "t": 142,
+      "altKm": 56.5,
+      "speedKmh": 5680
+    },
+    {
+      "t": 160,
+      "altKm": 69,
+      "speedKmh": 5900
+    },
+    {
+      "t": 200,
+      "altKm": 94,
+      "speedKmh": 6900
+    },
+    {
+      "t": 250,
+      "altKm": 120,
+      "speedKmh": 8700
+    },
+    {
+      "t": 300,
+      "altKm": 140,
+      "speedKmh": 11000
+    },
+    {
+      "t": 350,
+      "altKm": 155,
+      "speedKmh": 13700
+    },
+    {
+      "t": 400,
+      "altKm": 166,
+      "speedKmh": 17000
+    },
+    {
+      "t": 450,
+      "altKm": 172,
+      "speedKmh": 20800
+    },
+    {
+      "t": 504,
+      "altKm": 180,
+      "speedKmh": 26300,
+      "note": "SECO; speed/altitude tuned so the coast arc peaks at 275 km for the insertion burn"
+    }
+  ],
+  "booster": [
+    {
+      "t": 165,
+      "altKm": 70,
+      "downrangeKm": 80
+    },
+    {
+      "t": 187,
+      "altKm": 81,
+      "downrangeKm": 81
+    },
+    {
+      "t": 230,
+      "altKm": 91,
+      "downrangeKm": 70
+    },
+    {
+      "t": 270,
+      "altKm": 88,
+      "downrangeKm": 55
+    },
+    {
+      "t": 310,
+      "altKm": 72,
+      "downrangeKm": 40
+    },
+    {
+      "t": 345,
+      "altKm": 46,
+      "downrangeKm": 26
+    },
+    {
+      "t": 365,
+      "altKm": 23,
+      "downrangeKm": 17
+    },
+    {
+      "t": 382,
+      "altKm": 8.5,
+      "downrangeKm": 12
+    },
+    {
+      "t": 396,
+      "altKm": 2.0,
+      "downrangeKm": 10
+    },
+    {
+      "t": 410,
+      "altKm": 0.3,
+      "downrangeKm": 9.3
+    },
+    {
+      "t": 421,
+      "altKm": 0,
+      "downrangeKm": 9.2
+    }
+  ]
+}

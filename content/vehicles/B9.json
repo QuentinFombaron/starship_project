@@ -1,0 +1,32 @@
+{
+  "id": "B9",
+  "type": "booster",
+  "block": "Block 1",
+  "status": "destroyed",
+  "flights": [
+    2
+  ],
+  "summary": "Booster 9 was the first Super Heavy with electric thrust vector control and a hot-staging ring. It got all 33 engines through ascent on Flight 2 but exploded during its boostback burn over the Gulf of Mexico.",
+  "history": [
+    {
+      "date": "2022-12-21",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2023-08-06",
+      "event": "First 33-engine static fire (2.74 s, cut short); first with the new water deluge"
+    },
+    {
+      "date": "2023-08-25",
+      "event": "Second 33-engine static fire"
+    },
+    {
+      "date": "2023-09-05",
+      "event": "Ship 25 stacked on top"
+    },
+    {
+      "date": "2023-11-18",
+      "event": "Launched on Flight 2; exploded during boostback"
+    }
+  ]
+}

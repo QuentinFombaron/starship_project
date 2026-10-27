@@ -1,0 +1,32 @@
+{
+  "id": "S24",
+  "type": "ship",
+  "block": "Block 1",
+  "status": "destroyed",
+  "flights": [
+    1
+  ],
+  "summary": "Ship 24 flew on the first integrated Starship launch. It never separated from Booster 7 and was destroyed with it about four minutes after liftoff.",
+  "history": [
+    {
+      "date": "2022-06-02",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2022-08-10",
+      "event": "First static fire (two engines)"
+    },
+    {
+      "date": "2022-09-08",
+      "event": "Six-engine static fire"
+    },
+    {
+      "date": "2022-12-15",
+      "event": "Single-engine static fire"
+    },
+    {
+      "date": "2023-04-20",
+      "event": "Launched on Flight 1; destroyed before stage separation"
+    }
+  ]
+}

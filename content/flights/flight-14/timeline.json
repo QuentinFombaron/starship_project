@@ -1,0 +1,329 @@
+[
+  {
+    "id": "go-for-launch",
+    "t": -3300,
+    "title": "GO for propellant load",
+    "vehicle": "ground",
+    "kind": "countdown",
+    "estimated": false
+  },
+  {
+    "id": "prop-load",
+    "t": -3240,
+    "title": "Propellant load begins",
+    "vehicle": "ground",
+    "kind": "countdown",
+    "description": "Super Heavy and Starship begin loading liquid methane and liquid oxygen.",
+    "estimated": true
+  },
+  {
+    "id": "engine-chill",
+    "t": -1140,
+    "title": "Raptor engine chill",
+    "vehicle": "both",
+    "kind": "countdown",
+    "description": "Cryogenic propellant flows through the Raptors to condition them for ignition.",
+    "estimated": true
+  },
+  {
+    "id": "prop-load-complete",
+    "t": -180,
+    "title": "Propellant load complete",
+    "vehicle": "ground",
+    "kind": "countdown",
+    "estimated": true
+  },
+  {
+    "id": "terminal-count",
+    "t": -40,
+    "title": "Flight director verifies GO for launch",
+    "vehicle": "ground",
+    "kind": "countdown",
+    "estimated": true
+  },
+  {
+    "id": "deluge",
+    "t": -10,
+    "title": "Water deluge activates",
+    "vehicle": "ground",
+    "kind": "countdown",
+    "description": "The steel flame deflector sprays water to absorb the acoustic and thermal energy of 33 Raptors.",
+    "estimated": true
+  },
+  {
+    "id": "ignition",
+    "t": -3,
+    "title": "Raptor ignition sequence",
+    "vehicle": "booster",
+    "kind": "burn-start",
+    "estimated": true
+  },
+  {
+    "id": "liftoff",
+    "t": 0,
+    "title": "Liftoff",
+    "vehicle": "both",
+    "kind": "liftoff",
+    "description": "Super Heavy B21 and Ship 41 lift off from Orbital Launch Pad 2 at Starbase, Texas."
+  },
+  {
+    "id": "max-q",
+    "t": 58,
+    "title": "Max Q",
+    "vehicle": "both",
+    "kind": "milestone",
+    "description": "Moment of peak mechanical stress on the rocket.",
+    "estimated": true
+  },
+  {
+    "id": "booster-engine-out",
+    "t": 76,
+    "title": "Booster engine shutdown",
+    "vehicle": "booster",
+    "kind": "anomaly",
+    "status": "off-nominal",
+    "description": "One Super Heavy Raptor shuts down early, about a minute into flight. The remaining 32 engines compensate.",
+    "estimated": true
+  },
+  {
+    "id": "meco",
+    "t": 140,
+    "title": "Booster MECO",
+    "vehicle": "booster",
+    "kind": "burn-end",
+    "description": "Most Super Heavy engines cut off (main engine cutoff).",
+    "estimated": true
+  },
+  {
+    "id": "hot-staging",
+    "t": 142,
+    "title": "Hot staging",
+    "vehicle": "both",
+    "kind": "staging",
+    "description": "Starship lights all six engines while still attached and pushes away from Super Heavy through the vented hot-stage ring.",
+    "estimated": true
+  },
+  {
+    "id": "boostback-start",
+    "t": 147,
+    "title": "Booster boostback burn start",
+    "vehicle": "booster",
+    "kind": "burn-start",
+    "status": "partial",
+    "estimated": true,
+    "description": "31 of the 33 planned engines relight. The burn deliberately runs the main LOX tank dry to probe performance limits."
+  },
+  {
+    "id": "boostback-end",
+    "t": 187,
+    "title": "Booster boostback burn shutdown",
+    "vehicle": "booster",
+    "kind": "burn-end",
+    "estimated": true
+  },
+  {
+    "id": "booster-landing-burn-start",
+    "t": 396,
+    "title": "Booster landing burn start",
+    "vehicle": "booster",
+    "kind": "burn-start",
+    "status": "partial",
+    "estimated": true,
+    "description": "11 of 13 planned engines relight, then the booster steps down to 5, then 3 engines."
+  },
+  {
+    "id": "booster-landing-5",
+    "t": 408,
+    "title": "Booster landing burn steps down to 5, then 3 engines",
+    "vehicle": "booster",
+    "kind": "milestone",
+    "estimated": true
+  },
+  {
+    "id": "booster-splashdown",
+    "t": 421,
+    "title": "Booster landing burn shutdown and splashdown",
+    "vehicle": "booster",
+    "kind": "landing",
+    "description": "Super Heavy B21 makes a soft, controlled splashdown in the Gulf a few miles off the Texas coast."
+  },
+  {
+    "id": "booster-fts",
+    "t": 428,
+    "title": "Booster flight termination demo",
+    "vehicle": "booster",
+    "kind": "milestone",
+    "description": "After shutdown, B21's flight termination system fires as a planned demonstration of the safety hardware.",
+    "estimated": true
+  },
+  {
+    "id": "rvac-out",
+    "t": 430,
+    "title": "Ship Raptor Vacuum engine out",
+    "vehicle": "ship",
+    "kind": "anomaly",
+    "status": "off-nominal",
+    "description": "One of Ship 41's three Raptor Vacuum engines shuts down early. The other five engines burn longer to reach the planned trajectory.",
+    "estimated": true
+  },
+  {
+    "id": "seco",
+    "t": 504,
+    "title": "Ship engine cutoff (SECO)",
+    "vehicle": "ship",
+    "kind": "burn-end",
+    "status": "partial",
+    "estimated": true,
+    "description": "Ship engine cutoff comes later than planned (~8:11) because of the longer burn on five engines."
+  },
+  {
+    "id": "not-committing",
+    "t": 690,
+    "title": "“Not going to commit to orbit”",
+    "vehicle": "ground",
+    "kind": "decision",
+    "status": "off-nominal",
+    "description": "After the RVac shutdown the team first decides to stay suborbital, with no Starlink deploy and an Indian Ocean splashdown.",
+    "estimated": true
+  },
+  {
+    "id": "orbit-decision",
+    "t": 1313,
+    "title": "GO for orbit",
+    "vehicle": "ground",
+    "kind": "decision",
+    "description": "After a poll lasting about 20 minutes, flight director's call: “We are go for orbit.” The Starbase crowd erupts.",
+    "estimated": false
+  },
+  {
+    "id": "oib-start",
+    "t": 1517,
+    "title": "Orbital insertion burn start",
+    "vehicle": "ship",
+    "kind": "burn-start",
+    "estimated": true,
+    "description": "A single sea-level Raptor relights, fed for the first time from the header tanks."
+  },
+  {
+    "id": "oib-end",
+    "t": 1536,
+    "title": "Orbital insertion burn shutdown",
+    "vehicle": "ship",
+    "kind": "burn-end",
+    "description": "Starship is in orbit for the first time: about 262 × 275 km at 30.5°.",
+    "estimated": true
+  },
+  {
+    "id": "payload-deploy-start",
+    "t": 2100,
+    "title": "Starlink deployment begins",
+    "vehicle": "ship",
+    "kind": "payload",
+    "description": "The PEZ dispenser door opens and Starlink V3 satellites slide out one by one. Three carry cameras to image Ship 41's heat shield.",
+    "estimated": true
+  },
+  {
+    "id": "payload-deploy-end",
+    "t": 3960,
+    "title": "Starlink deployment complete",
+    "vehicle": "ship",
+    "kind": "payload",
+    "description": "All 26 Starlink V3 satellites released. SpaceX contacts them through laser links, ground stations and user terminals.",
+    "estimated": true
+  },
+  {
+    "id": "early-deorbit",
+    "t": 5280,
+    "title": "Early deorbit decision",
+    "vehicle": "ground",
+    "kind": "decision",
+    "status": "off-nominal",
+    "description": "SpaceX shortens the planned six-orbit, 10-hour mission and targets the northern Pacific, one of two pre-cleared zones.",
+    "estimated": true
+  },
+  {
+    "id": "live-video",
+    "t": 5700,
+    "title": "Live HD video from orbit via Starlink",
+    "vehicle": "ship",
+    "kind": "milestone",
+    "description": "For the first time, live views of Starship in orbit are relayed through Starlink laser links.",
+    "estimated": true
+  },
+  {
+    "id": "deorbit-start",
+    "t": 7920,
+    "title": "Deorbit burn start",
+    "vehicle": "ship",
+    "kind": "burn-start",
+    "description": "First-ever Starship deorbit burn, on one sea-level Raptor, targeting the northern Pacific contingency zone."
+  },
+  {
+    "id": "deorbit-end",
+    "t": 7931,
+    "title": "Deorbit burn shutdown",
+    "vehicle": "ship",
+    "kind": "burn-end",
+    "estimated": true
+  },
+  {
+    "id": "ship-entry",
+    "t": 10020,
+    "title": "Ship entry",
+    "vehicle": "ship",
+    "kind": "entry",
+    "description": "Entry interface. Plasma builds around the heat shield, which includes two reflown tiles from Ship 40.",
+    "estimated": true
+  },
+  {
+    "id": "ship-transonic",
+    "t": 11095,
+    "title": "Ship is transonic",
+    "vehicle": "ship",
+    "kind": "milestone",
+    "estimated": true
+  },
+  {
+    "id": "ship-subsonic",
+    "t": 11120,
+    "title": "Ship is subsonic",
+    "vehicle": "ship",
+    "kind": "milestone",
+    "estimated": true
+  },
+  {
+    "id": "ship-landing-burn-start",
+    "t": 11293,
+    "title": "Ship landing burn start",
+    "vehicle": "ship",
+    "kind": "burn-start",
+    "estimated": false,
+    "description": "All three sea-level Raptors relight."
+  },
+  {
+    "id": "ship-landing-flip",
+    "t": 11293,
+    "title": "Landing flip",
+    "vehicle": "ship",
+    "kind": "landing",
+    "estimated": false
+  },
+  {
+    "id": "ship-splashdown",
+    "t": 11310,
+    "title": "Ship splashdown",
+    "vehicle": "ship",
+    "kind": "landing",
+    "description": "Ship 41 splashes down several hundred kilometres north of Hawaii. A buoy camera captures it tipping over and exploding about six seconds later.",
+    "estimated": false
+  },
+  {
+    "id": "ship-explosion",
+    "t": 11316,
+    "title": "Ship tips over and residual propellant ignites",
+    "vehicle": "ship",
+    "kind": "landing",
+    "status": "nominal",
+    "estimated": true
+  }
+]

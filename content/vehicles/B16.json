@@ -1,0 +1,24 @@
+{
+  "id": "B16",
+  "type": "booster",
+  "block": "Block 2",
+  "status": "expended",
+  "flights": [
+    10
+  ],
+  "summary": "Booster 16 flew on Flight 10, running landing burn experiments that included a planned engine-out case. It ended with a planned hover and splashdown in the Gulf of Mexico.",
+  "history": [
+    {
+      "date": "2025-03-01",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2025-06-06",
+      "event": "33-engine static fire"
+    },
+    {
+      "date": "2025-08-26",
+      "event": "Launched on Flight 10; planned splashdown in the Gulf of Mexico"
+    }
+  ]
+}

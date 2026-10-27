@@ -1,0 +1,41 @@
+{
+  "id": "B15",
+  "type": "booster",
+  "block": "Block 2",
+  "status": "expended",
+  "flights": [
+    8,
+    11
+  ],
+  "summary": "Booster 15 was caught by the tower on Flight 8. It flew again on Flight 11, testing Block 3 landing burn configurations before being expended in the Gulf of Mexico.",
+  "history": [
+    {
+      "date": "2024-12-27",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2025-02-09",
+      "event": "33-engine static fire ahead of Flight 8"
+    },
+    {
+      "date": "2025-03-03",
+      "event": "Flight 8 launch attempt scrubbed"
+    },
+    {
+      "date": "2025-03-06",
+      "event": "Launched on Flight 8; caught by the OLP-1 tower"
+    },
+    {
+      "date": "2025-09-07",
+      "event": "Static fire ahead of its second flight"
+    },
+    {
+      "date": "2025-10-11",
+      "event": "Ship 38 stacked on top"
+    },
+    {
+      "date": "2025-10-13",
+      "event": "Reflown on Flight 11; expended in the Gulf of Mexico"
+    }
+  ]
+}

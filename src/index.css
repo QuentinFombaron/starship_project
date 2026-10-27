@@ -1,0 +1,85 @@
+@import '@fontsource/barlow/300.css';
+@import '@fontsource/barlow/400.css';
+@import '@fontsource/barlow/500.css';
+@import '@fontsource/barlow/600.css';
+@import '@fontsource/barlow-condensed/500.css';
+@import '@fontsource/barlow-condensed/600.css';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'D-DIN', 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'D-DIN', 'Barlow Condensed', 'Barlow', Arial, sans-serif;
+  --font-mono: 'Barlow', ui-monospace, monospace;
+
+  --color-ink: #000000;
+  --color-panel: rgb(10 10 12 / 0.72);
+  --color-line: rgb(255 255 255 / 0.18);
+  --color-line-strong: rgb(255 255 255 / 0.5);
+  --color-dim: rgb(255 255 255 / 0.55);
+  --color-faint: rgb(255 255 255 / 0.32);
+  --color-ok: #3ee08f;
+  --color-warn: #ffb547;
+  --color-fail: #ff4d4d;
+  --color-accent: #4fb3ff;
+  --color-booster: #d95926;
+  --color-ship: #3987e5;
+
+  --tracking-spacex: 0.14em;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'tnum' 1;
+  }
+  ::selection {
+    background: #fff;
+    color: #000;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.25) transparent;
+  }
+}
+
+@layer components {
+  .label {
+    @apply font-display text-[11px] font-semibold uppercase tracking-[var(--tracking-spacex)] text-dim;
+  }
+  .heading {
+    @apply font-display font-semibold uppercase tracking-[0.06em];
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 border border-white px-6 py-3 font-display text-[13px] font-semibold uppercase tracking-[var(--tracking-spacex)] transition-colors duration-300 hover:bg-white hover:text-black;
+  }
+  .btn-sm {
+    @apply inline-flex items-center justify-center gap-1.5 border border-line px-2.5 py-1.5 font-display text-[11px] font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:border-white hover:bg-white hover:text-black disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-white;
+  }
+  .btn-sm[aria-pressed='true'] {
+    @apply border-white bg-white text-black;
+  }
+  .panel {
+    @apply border border-line bg-panel backdrop-blur-md;
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.maplibregl-ctrl-attrib {
+  font-size: 10px !important;
+  background: rgb(0 0 0 / 0.6) !important;
+  color: rgb(255 255 255 / 0.6) !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: rgb(255 255 255 / 0.75) !important;
+}

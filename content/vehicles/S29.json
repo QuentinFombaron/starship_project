@@ -1,0 +1,36 @@
+{
+  "id": "S29",
+  "type": "ship",
+  "block": "Block 1",
+  "status": "expended",
+  "flights": [
+    4
+  ],
+  "summary": "Ship 29 was the first Starship to survive reentry and make a soft ocean landing, splashing down in the Indian Ocean on Flight 4 despite heavy flap damage.",
+  "history": [
+    {
+      "date": "2023-09-27",
+      "event": "Cryogenic proof tests"
+    },
+    {
+      "date": "2024-03-11",
+      "event": "Six-engine spin prime"
+    },
+    {
+      "date": "2024-03-25",
+      "event": "Six-engine static fire"
+    },
+    {
+      "date": "2024-03-27",
+      "event": "Single-engine static fire"
+    },
+    {
+      "date": "2024-05-15",
+      "event": "Stacked on Booster 11"
+    },
+    {
+      "date": "2024-06-06",
+      "event": "Launched on Flight 4; controlled splashdown in the Indian Ocean"
+    }
+  ]
+}

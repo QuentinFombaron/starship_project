@@ -1,0 +1,108 @@
+{
+  "id": "flight-08",
+  "number": 8,
+  "name": "Flight 8",
+  "launchTime": "2025-03-06T23:30:31Z",
+  "outcome": "failure",
+  "launchSite": {
+    "name": "Starbase, Texas",
+    "pad": "OLP-1",
+    "position": {
+      "lat": 25.9967,
+      "lon": -97.1572
+    }
+  },
+  "vehicles": {
+    "booster": {
+      "id": "B15",
+      "block": "Block 2"
+    },
+    "ship": {
+      "id": "S34",
+      "block": "Block 2"
+    }
+  },
+  "summary": "Booster 15 returned to OLP-1 and was caught by the tower at T+7:02, despite engine relight problems during its landing burn. Ship 34 lost four of its six engines starting about T+8:04, shortly before planned engine cutoff, then lost attitude control and broke up. SpaceX traced the loss to a hardware failure in one sea-level Raptor that let propellants mix and ignite, which was distinct from the Flight 7 failure. The breakup was seen from Florida, the Bahamas, Jamaica, and the Turks and Caicos Islands.",
+  "highlights": [
+    "Third booster catch (T+7:02)",
+    "Ship lost four of six engines near the end of ascent",
+    "Breakup seen from Florida and the Bahamas",
+    "Four Starlink simulators onboard, not deployed"
+  ],
+  "objectives": [
+    {
+      "label": "Booster tower catch",
+      "status": "achieved"
+    },
+    {
+      "label": "Ship ascent to engine cutoff",
+      "status": "failed"
+    },
+    {
+      "label": "Deploy 4 Starlink simulators",
+      "status": "not-attempted"
+    },
+    {
+      "label": "In-space Raptor relight",
+      "status": "not-attempted"
+    },
+    {
+      "label": "Ship reentry and Indian Ocean splashdown",
+      "status": "not-attempted"
+    }
+  ],
+  "payload": {
+    "name": "Starlink mass simulators",
+    "count": 4,
+    "description": "About 8,000 kg of simulators; not deployed."
+  },
+  "orbit": {
+    "perigeeKm": -3600,
+    "apogeeKm": 146,
+    "inclinationDeg": 26.4,
+    "orbital": false
+  },
+  "boosterFate": "Caught by the OLP-1 tower chopsticks at T+7:02. Reflown on Flight 11.",
+  "shipFate": "Lost engines and attitude control late in ascent; destroyed around T+9:35 over the Caribbean.",
+  "boosterLanding": {
+    "lat": 25.9967,
+    "lon": -97.1572
+  },
+  "durationSec": 575,
+  "stats": [
+    {
+      "label": "Booster catch",
+      "value": "Yes, T+7:02"
+    },
+    {
+      "label": "Ship engines lost",
+      "value": "4 of 6"
+    },
+    {
+      "label": "Ship destroyed",
+      "value": "~T+9:35"
+    },
+    {
+      "label": "Apogee",
+      "value": "~146 km"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Starship flight test 8",
+      "url": "https://en.wikipedia.org/wiki/Starship_flight_test_8",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "Starship Flight 8",
+      "url": "https://www.spacex.com/launches/mission/?missionId=starship-flight-8",
+      "publisher": "SpaceX"
+    },
+    {
+      "title": "Starship Flight 8 report",
+      "url": "https://www.spacex.com/updates/#flight-8-report",
+      "publisher": "SpaceX"
+    }
+  ],
+  "hasReplay": false
+}

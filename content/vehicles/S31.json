@@ -1,0 +1,32 @@
+{
+  "id": "S31",
+  "type": "ship",
+  "block": "Block 1",
+  "status": "expended",
+  "flights": [
+    6
+  ],
+  "summary": "Ship 31 was the last Block 1 ship. On Flight 6 it performed the first in-space Raptor relight and the first daylight Starship splashdown, carrying a toy banana as its zero-g indicator.",
+  "history": [
+    {
+      "date": "2024-05-12",
+      "event": "First cryogenic proof test; returned for electrical repairs"
+    },
+    {
+      "date": "2024-07-02",
+      "event": "Cryogenic proof test"
+    },
+    {
+      "date": "2024-09-18",
+      "event": "Static fire"
+    },
+    {
+      "date": "2024-11-14",
+      "event": "Stacked on Booster 13"
+    },
+    {
+      "date": "2024-11-19",
+      "event": "Launched on Flight 6; in-space relight, daylight splashdown in the Indian Ocean"
+    }
+  ]
+}

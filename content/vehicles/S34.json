@@ -1,0 +1,28 @@
+{
+  "id": "S34",
+  "type": "ship",
+  "block": "Block 2",
+  "status": "destroyed",
+  "flights": [
+    8
+  ],
+  "summary": "Ship 34 flew on Flight 8. It lost four of its six engines shortly before engine cutoff, then lost attitude control and broke up over the Caribbean.",
+  "history": [
+    {
+      "date": "2025-01-18",
+      "event": "Cryogenic proof tests"
+    },
+    {
+      "date": "2025-02-12",
+      "event": "60-second static fire testing feedline changes after Flight 7"
+    },
+    {
+      "date": "2025-03-03",
+      "event": "Flight 8 launch attempt scrubbed"
+    },
+    {
+      "date": "2025-03-06",
+      "event": "Launched on Flight 8; lost late in ascent"
+    }
+  ]
+}

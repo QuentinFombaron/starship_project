@@ -1,0 +1,49 @@
+{
+  "id": "flight-16",
+  "number": 16,
+  "name": "Flight 16",
+  "launchTime": "2026-12-10T12:00:00Z",
+  "outcome": "scheduled",
+  "launchSite": {
+    "name": "Kennedy Space Center, Florida",
+    "pad": "LC-39A",
+    "position": {
+      "lat": 28.6084,
+      "lon": -80.6043
+    }
+  },
+  "vehicles": {
+    "booster": {
+      "id": "TBA",
+      "block": "Block 3"
+    },
+    "ship": {
+      "id": "TBA",
+      "block": "Block 3"
+    }
+  },
+  "summary": "Flight 16 is tentatively targeted for no earlier than December 10, 2026. It would be the first Starship launch from Launch Complex 39A at Kennedy Space Center in Florida. The vehicles have not been announced.",
+  "highlights": [
+    "Planned first Starship launch from Florida (LC-39A)",
+    "Vehicles not yet assigned"
+  ],
+  "objectives": [
+    {
+      "label": "First Starship launch from LC-39A",
+      "status": "pending"
+    }
+  ],
+  "sources": [
+    {
+      "title": "List of Starship launches",
+      "url": "https://en.wikipedia.org/wiki/List_of_Starship_launches",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "Starship Flight 15 launch date and how to watch",
+      "url": "https://www.spacelaunchschedule.com/news/starship-flight-15-launch-date-how-to-watch/",
+      "publisher": "Space Launch Schedule"
+    }
+  ],
+  "hasReplay": false
+}

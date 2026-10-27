@@ -1,0 +1,36 @@
+{
+  "id": "B7",
+  "type": "booster",
+  "block": "Block 1",
+  "status": "destroyed",
+  "flights": [
+    1
+  ],
+  "summary": "Booster 7 was the first Super Heavy built to carry 33 Raptor engines and flew the first integrated Starship launch. It lost several engines and thrust vector control during ascent and was destroyed with Ship 24 by the flight termination system.",
+  "history": [
+    {
+      "date": "2022-04-04",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2022-07-12",
+      "event": "Unplanned ignition during a spin prime test caused an explosion at the base; vehicle repaired"
+    },
+    {
+      "date": "2022-08-09",
+      "event": "First static fire (single engine) on the orbital launch mount"
+    },
+    {
+      "date": "2022-11-14",
+      "event": "Full-duration 14-engine static fire"
+    },
+    {
+      "date": "2023-02-09",
+      "event": "31-engine static fire (33 planned)"
+    },
+    {
+      "date": "2023-04-20",
+      "event": "Launched on Flight 1; destroyed by flight termination system"
+    }
+  ]
+}

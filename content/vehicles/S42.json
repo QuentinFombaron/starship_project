@@ -1,0 +1,36 @@
+{
+  "id": "S42",
+  "type": "ship",
+  "block": "Block 3",
+  "status": "active",
+  "flights": [
+    15
+  ],
+  "summary": "Ship 42 is assigned to Flight 15, where Elon Musk has said SpaceX will attempt the first tower catch of a Starship upper stage. In September 2026 it was lifted by the Pad 2 tower arms during ground tests.",
+  "history": [
+    {
+      "date": "2026-07-03",
+      "event": "Stacking began"
+    },
+    {
+      "date": "2026-09-03",
+      "event": "Cryogenic proof test 1 at Massey's"
+    },
+    {
+      "date": "2026-09-04",
+      "event": "Cryogenic proof test 2"
+    },
+    {
+      "date": "2026-09-11",
+      "event": "Moved to the launch site for stacking and tower arm tests"
+    },
+    {
+      "date": "2026-10-09",
+      "event": "Cryogenic proof test 3"
+    },
+    {
+      "date": "2026-10-27",
+      "event": "Single-engine static fire demonstrating a deorbit burn"
+    }
+  ]
+}

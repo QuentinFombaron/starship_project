@@ -1,0 +1,32 @@
+{
+  "id": "S35",
+  "type": "ship",
+  "block": "Block 2",
+  "status": "destroyed",
+  "flights": [
+    9
+  ],
+  "summary": "Ship 35 was the first Block 2 ship to complete its ascent burn, on Flight 9. Its payload door failed to open, and leaks caused a loss of attitude control before it broke up during reentry.",
+  "history": [
+    {
+      "date": "2025-03-11",
+      "event": "First cryogenic proof test"
+    },
+    {
+      "date": "2025-05-01",
+      "event": "Single-engine static fire"
+    },
+    {
+      "date": "2025-05-02",
+      "event": "Six-engine static fire cut short at about 30 s"
+    },
+    {
+      "date": "2025-05-12",
+      "event": "Six-engine, 60-second static fire"
+    },
+    {
+      "date": "2025-05-27",
+      "event": "Launched on Flight 9; lost attitude control, broke up during reentry"
+    }
+  ]
+}

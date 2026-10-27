@@ -1,0 +1,105 @@
+{
+  "id": "flight-09",
+  "number": 9,
+  "name": "Flight 9",
+  "launchTime": "2025-05-27T23:36:28Z",
+  "outcome": "failure",
+  "launchSite": {
+    "name": "Starbase, Texas",
+    "pad": "OLP-1",
+    "position": {
+      "lat": 25.9967,
+      "lon": -97.1572
+    }
+  },
+  "vehicles": {
+    "booster": {
+      "id": "B14",
+      "block": "Block 2"
+    },
+    "ship": {
+      "id": "S35",
+      "block": "Block 2"
+    }
+  },
+  "summary": "Flight 9 was the first reflight of a Super Heavy, using Booster 14 from Flight 7, which flew a steeper descent experiment and was not meant to be caught. The booster broke up over the Gulf of Mexico around the start of its landing burn, about 6 minutes after launch. Ship 35 was the first Block 2 ship to complete its ascent burn, but its payload door failed to open and leaks led to loss of attitude control, so the relight was skipped. The ship broke up during reentry over the Indian Ocean about 47 minutes after launch.",
+  "highlights": [
+    "First reflight of a Super Heavy booster (B14)",
+    "Booster flew a higher angle-of-attack descent experiment",
+    "First Block 2 ship to reach engine cutoff",
+    "Payload door did not open; simulators not deployed",
+    "Ship lost attitude control and broke up during reentry"
+  ],
+  "objectives": [
+    {
+      "label": "Booster reflight",
+      "status": "achieved"
+    },
+    {
+      "label": "Booster descent experiments",
+      "status": "partial",
+      "note": "Booster broke up near the start of its landing burn."
+    },
+    {
+      "label": "Ship ascent to engine cutoff",
+      "status": "achieved"
+    },
+    {
+      "label": "Deploy 8 Starlink simulators",
+      "status": "failed",
+      "note": "Payload door did not open."
+    },
+    {
+      "label": "In-space Raptor relight",
+      "status": "not-attempted"
+    },
+    {
+      "label": "Ship reentry and Indian Ocean splashdown",
+      "status": "failed"
+    }
+  ],
+  "payload": {
+    "name": "Starlink mass simulators",
+    "count": 8,
+    "description": "About 16,000 kg of simulators; not deployed."
+  },
+  "boosterFate": "Broke up over the Gulf of Mexico at about 1 km altitude near the start of its landing burn (around T+6:16 to T+6:20).",
+  "shipFate": "Lost attitude control after propellant leaks; broke up during reentry over the Indian Ocean (telemetry lost T+46:48).",
+  "durationSec": 2808,
+  "stats": [
+    {
+      "label": "Booster",
+      "value": "First reflight (B14-2)"
+    },
+    {
+      "label": "Ship engine cutoff",
+      "value": "T+9:00"
+    },
+    {
+      "label": "Payload deploy",
+      "value": "Failed (door stuck)"
+    },
+    {
+      "label": "Ship telemetry lost",
+      "value": "T+46:48"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Starship flight test 9",
+      "url": "https://en.wikipedia.org/wiki/Starship_flight_test_9",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "Starship Flight 9",
+      "url": "https://www.spacex.com/launches/mission/?missionId=starship-flight-9",
+      "publisher": "SpaceX"
+    },
+    {
+      "title": "Starship Flight 9 report",
+      "url": "https://www.spacex.com/updates#flight-9-report",
+      "publisher": "SpaceX"
+    }
+  ],
+  "hasReplay": false
+}

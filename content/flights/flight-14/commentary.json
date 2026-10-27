@@ -1,0 +1,231 @@
+[
+  {
+    "t": -1500,
+    "text": "Weather's gorgeous, providing us with some pretty great clouds. Not going to be an issue throughout the count.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": -900,
+    "text": "We've got the saying: only the paranoid survive.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "detailed"
+  },
+  {
+    "t": -600,
+    "text": "Flight 14 is the first attempt to put a Starship into orbit. Booster 21 and Ship 41 are both third-generation Block 3 vehicles, powered by Raptor 3.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": -120,
+    "text": "Super Heavy and Starship together hold several thousand tonnes of super-chilled liquid methane and liquid oxygen.",
+    "kind": "explainer",
+    "level": "detailed"
+  },
+  {
+    "t": -10,
+    "text": "The water deluge comes on to absorb heat and sound from 33 Raptors.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": -3,
+    "text": "IGNITION",
+    "kind": "callout",
+    "level": "essential"
+  },
+  {
+    "t": 1,
+    "text": "LIFTOFF of Starship!",
+    "kind": "callout",
+    "level": "essential"
+  },
+  {
+    "t": 30,
+    "text": "33 Raptor 3 engines, each rated at about 280 tonnes-force, give Super Heavy more than 9,000 tonnes of thrust at liftoff. They gimbal and throttle to steer the ascent.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 58,
+    "text": "Max Q: the most aerodynamic stress the vehicle will see on ascent.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 78,
+    "text": "An engine shut down early on Super Heavy. The remaining Raptors keep the ascent on track.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 142,
+    "text": "Hot staging! Starship lights its six engines while still attached and pushes off through the vented ring.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 150,
+    "text": "Boostback: 31 of the 33 planned engines relight. The burn is designed to run the main LOX tank dry to probe the booster's margins.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 400,
+    "text": "Landing burn: 11 of 13 engines light, then the booster steps down to 5, then 3, for a soft splashdown in the Gulf.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 422,
+    "text": "A pretty soft splashdown for Super Heavy.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 430,
+    "text": "The booster's flight termination system fires as a planned demonstration of the safety hardware.",
+    "kind": "explainer",
+    "level": "detailed"
+  },
+  {
+    "t": 512,
+    "text": "We did have one of those engines go out on the way uphill…",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 600,
+    "text": "The team has made the call not to commit to orbit.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 690,
+    "text": "We are not going to do the additional burn that will send us into orbit.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 700,
+    "text": "Without the insertion burn Starship stays suborbital: an Indian Ocean splashdown and no Starlink deployment.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 1000,
+    "text": "So, we are not giving up yet on orbit.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 1313,
+    "text": "The go/no-go poll for orbit has finished, and we are GO for orbit!",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 1520,
+    "text": "The insertion burn uses a single sea-level Raptor fed from the header tanks, a first. It raises perigee out of the atmosphere.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 1560,
+    "text": "Starship is orbital.",
+    "kind": "callout",
+    "level": "essential"
+  },
+  {
+    "t": 2100,
+    "text": "The PEZ dispenser door opens. Satellites slide out one by one. Three of them carry cameras to photograph the ship's heat shield.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 2600,
+    "text": "Just this one flight was like 20 Falcon 9 flights in terms of bandwidth.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 3960,
+    "text": "All 26 Starlink V3 satellites are deployed: about 26 Tbps of new capacity.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 5280,
+    "text": "SpaceX will deorbit early, after about one and a half orbits, targeting the northern Pacific contingency zone.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 5700,
+    "text": "Live HD video from orbit, streamed through Starlink laser links. Another first.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 7925,
+    "text": "First-ever Starship deorbit burn. One sea-level Raptor lowers perigee into the atmosphere.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 7990,
+    "text": "We'll hit entry around the 2 hour 47 minute mark, with splashdown about 21 minutes after that.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 10030,
+    "text": "Entry: plasma builds around the heat shield, which includes reflown tiles from Ship 40 and new curved tiles.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 11100,
+    "text": "Now subsonic, Starship falls belly-first, steering with its four flaps.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 11294,
+    "text": "Landing flip and landing burn: all three sea-level Raptors relight.",
+    "kind": "explainer",
+    "level": "essential"
+  },
+  {
+    "t": 11311,
+    "text": "Starship has landed.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 11320,
+    "text": "Not quite a soft, extra-soft splashdown like we had on the last one.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  },
+  {
+    "t": 11345,
+    "text": "Most importantly, Starship made it to orbit.",
+    "kind": "host",
+    "speaker": "Dan Huot",
+    "level": "essential"
+  }
+]

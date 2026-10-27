@@ -1,0 +1,99 @@
+{
+  "id": "flight-13",
+  "number": 13,
+  "name": "Flight 13",
+  "launchTime": "2026-07-24T22:51:00Z",
+  "outcome": "partial",
+  "launchSite": {
+    "name": "Starbase, Texas",
+    "pad": "OLP-2",
+    "position": {
+      "lat": 25.9959,
+      "lon": -97.154
+    }
+  },
+  "vehicles": {
+    "booster": {
+      "id": "B20",
+      "block": "Block 3"
+    },
+    "ship": {
+      "id": "S40",
+      "block": "Block 3"
+    }
+  },
+  "summary": "Flight 13 deployed the first 20 Starlink V3 satellites from Ship 40 on a suborbital trajectory, six of them carrying cameras to inspect the ship, and the satellites reentered shortly after deployment. Booster 20 cut its boostback short, lit only 10 of 13 engines for the landing burn, and was destroyed when it hit the Gulf of Mexico hard. Ship 40 relit a Raptor in space and made a controlled splashdown in the Indian Ocean northwest of Australia. It was the first Starship to stay intact after tipping over in the water, and it was later recovered.",
+  "highlights": [
+    "First Starlink V3 deployment (20 satellites)",
+    "Six satellites carried cameras to image the ship",
+    "In-space Raptor relight at T+38:58",
+    "Booster landing burn failed; hard splashdown in the Gulf",
+    "First ship to stay intact after splashdown"
+  ],
+  "objectives": [
+    {
+      "label": "Starlink V3 payload deployment",
+      "status": "achieved"
+    },
+    {
+      "label": "In-space Raptor relight",
+      "status": "achieved"
+    },
+    {
+      "label": "Booster landing burn and soft splashdown",
+      "status": "failed"
+    },
+    {
+      "label": "Ship controlled splashdown in the Indian Ocean",
+      "status": "achieved"
+    }
+  ],
+  "payload": {
+    "name": "Starlink V3 satellites",
+    "count": 20,
+    "description": "Deployed between T+16:40 and T+27:39 on a suborbital trajectory; six carried cameras to inspect Ship 40."
+  },
+  "boosterFate": "Lit only 10 of 13 landing engines, several of which shut down; hit the Gulf of Mexico at speed and was destroyed (about T+6:53).",
+  "shipFate": "Controlled splashdown in the Indian Ocean at T+1:05:21; stayed intact and was later recovered.",
+  "shipLanding": {
+    "lat": -19,
+    "lon": 107
+  },
+  "durationSec": 3921,
+  "stats": [
+    {
+      "label": "Starlink V3 deployed",
+      "value": "20"
+    },
+    {
+      "label": "Raptor relight",
+      "value": "T+38:58"
+    },
+    {
+      "label": "Booster landing engines lit",
+      "value": "10 of 13"
+    },
+    {
+      "label": "Ship splashdown",
+      "value": "T+1:05:21"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Starship flight 13",
+      "url": "https://en.wikipedia.org/wiki/Starship_flight_13",
+      "publisher": "Wikipedia"
+    },
+    {
+      "title": "Starship's Thirteenth Flight Test",
+      "url": "https://www.spacex.com/launches/starship-flight-13",
+      "publisher": "SpaceX"
+    },
+    {
+      "title": "Super Heavy-Starship rocket chalks up mostly successful test flight",
+      "url": "https://spaceflightnow.com/2026/07/25/super-heavy-starship-rocket-chalks-up-mostly-successful-test-flight/",
+      "publisher": "Spaceflight Now"
+    }
+  ],
+  "hasReplay": false
+}
