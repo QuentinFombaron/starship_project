@@ -7,6 +7,7 @@ import { BOOSTER_LEN, MOUNT_HEIGHT, useReplay } from '../../sim/replay'
 import { live } from '../live'
 import { DECK_Y, PAD_B_YAW } from '../Starbase/PadB'
 import { PadFrame } from '../Starbase/Starbase'
+import { HotStagingCloud, hotStagingTimes } from './HotStaging'
 import { ParticleBurst } from './Particles'
 
 /** Additive glow sprite that follows a world point and pulses with an intensity curve. */
@@ -52,7 +53,7 @@ export function Effects() {
   const tel = replay.data.telemetry
   const boosterEnd = { lat: tel.booster.lat.at(-1)!, lon: tel.booster.lon.at(-1)! }
   const shipEnd = { lat: tel.ship.lat.at(-1)!, lon: tel.ship.lon.at(-1)! }
-  const tStage = replay.tStage
+  const { ignition: tShipIgnition, separation: tStage } = hotStagingTimes(replay)
   const tBoosterLand = replay.t('booster-landing-burn-start', 395)
   const tBoosterSplash = replay.t('booster-splashdown', 421)
   const tFts = replay.t('booster-fts', tBoosterSplash + 7)
@@ -79,13 +80,14 @@ export function Effects() {
         </group>
       </PadFrame>
 
-      {/* hot staging: ship engines igniting against the vented interstage */}
+      {/* hot staging: ship engines lighting against the vented ring, exhaust cloud blowing out of the vents */}
       <Flash
         at={() => interstage.copy(live.booster.com).addScaledVector(live.booster.nose, BOOSTER_LEN / 2 + 2)}
-        intensity={(t) => smoothstep(tStage - 2.2, tStage - 1.6, t) * (1 - smoothstep(tStage + 0.5, tStage + 3.5, t))}
-        size={120}
+        intensity={(t) => smoothstep(tShipIgnition, tShipIgnition + 0.3, t) * (0.5 + 0.3 * smoothstep(tStage - 0.3, tStage, t)) * (1 - smoothstep(tStage + 0.4, tStage + 2.5, t))}
+        size={55}
         color="#ffcf9a"
       />
+      <HotStagingCloud />
       {/* booster flight-termination demo */}
       <Flash at={() => live.booster.com} intensity={(t) => smoothstep(tFts - 0.1, tFts, t) * (1 - smoothstep(tFts + 0.3, tFts + 3, t))} size={220} color="#ffb070" />
       {/* ship splashdown explosion */}

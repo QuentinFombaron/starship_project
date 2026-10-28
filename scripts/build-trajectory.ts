@@ -453,24 +453,25 @@ for (const { t, s } of shipDyn) {
 }
 
 // ───────────────────────── booster track ─────────────────────────
+// Separation → boostback start: integrated in the (downrange, altitude) plane from the staging state, so the
+// velocity is continuous at staging. The ship's plume shoves the booster back for a second or two, the three
+// centre engines keep a little thrust until the flip turns them sideways. Boostback: cubic Hermite onto the
+// boostback-end anchor with the anchors' own velocity there. After that: splines through the anchors.
 const tBoosterSplash = ev('booster-splashdown').t
+const tBbS = ev('boostback-start').t
+const tBbE = ev('boostback-end').t
+const FLIP_END = tBbS + 8
+const IMPINGE = 30 // m/s², ship plume on the booster's forward dome, decaying in ~0.7 s
+const CENTRE_THRUST = 3 // m/s², three centre Raptors at ~50 % on a nearly empty booster
 const boosterAnchors = kf.booster.slice().sort((a, b) => a.t - b.t)
 const bAlt: number[][] = []
 const bX: number[][] = []
-for (const a of ascent.samples) {
-  if (a.t <= tStage && a.t >= tStage - 40 && a.t % 10 === 0) {
-    bAlt.push([a.t, ecefToGeo(a.r).alt])
-    bX.push([a.t, a.downrange])
-  }
-}
-const stageSample = ascent.samples.find((s) => s.t === tStage)!
-bAlt.push([tStage, ecefToGeo(stageSample.r).alt])
-bX.push([tStage, stageSample.downrange])
 for (const a of boosterAnchors) {
-  if (a.t <= tStage) continue
+  if (a.t < tBbE) continue
   if (a.altKm !== undefined) bAlt.push([a.t, a.altKm * 1000])
   if (a.downrangeKm !== undefined) bX.push([a.t, a.downrangeKm * 1000])
 }
+if (bX[0]?.[0] !== tBbE || bAlt[0]?.[0] !== tBbE) throw new Error(`keyframes.json needs a booster anchor (altKm + downrangeKm) at boostback end, t=${tBbE}`)
 const bAltF = pchip(
   bAlt.map((p) => p[0]),
   bAlt.map((p) => p[1]),
@@ -479,6 +480,44 @@ const bXF = pchip(
   bX.map((p) => p[0]),
   bX.map((p) => p[1]),
 )
+const stageSample = ascent.samples.find((s) => s.t === tStage)!
+const coast: { x: number; h: number }[] = []
+let bbStart = { x: 0, h: 0, vx: 0, vz: 0 }
+{
+  let x = stageSample.downrange
+  let h = ecefToGeo(stageSample.r).alt
+  let vx = stageSample.vh
+  let vz = stageSample.vz
+  const sub = 100
+  const step = DT / sub
+  for (let i = 0; i < ((tBbS - tStage) / DT) * sub; i++) {
+    const t = tStage + i * step
+    if (i % sub === 0) coast.push({ x, h })
+    const v = Math.hypot(vx, vz)
+    const τ = t - tStage
+    const turned = Math.PI * smoothstep(tStage, FLIP_END, t) * (138 / 180)
+    const along = -IMPINGE * Math.exp(-τ / 0.7) + CENTRE_THRUST * Math.max(0, Math.cos(turned))
+    const g = MU_EARTH / (R_EARTH + h) ** 2 - vx * vx / (R_EARTH + h)
+    vx += (along * vx) / v * step
+    vz += ((along * vz) / v - g) * step
+    x += vx * step
+    h += vz * step
+  }
+  bbStart = { x, h, vx, vz }
+}
+const dT = 0.01
+const bbEnd = { x: bXF(tBbE), h: bAltF(tBbE), vx: (bXF(tBbE + dT) - bXF(tBbE)) / dT, vz: (bAltF(tBbE + dT) - bAltF(tBbE)) / dT }
+{
+  const T = tBbE - tBbS
+  const a0 = (p0: number, p1: number, v0: number, v1: number) => (6 * (p1 - p0) - (4 * v0 + 2 * v1) * T) / (T * T)
+  const a1 = (p0: number, p1: number, v0: number, v1: number) => (-6 * (p1 - p0) + (2 * v0 + 4 * v1) * T) / (T * T)
+  const ax = [a0(bbStart.x, bbEnd.x, bbStart.vx, bbEnd.vx), a1(bbStart.x, bbEnd.x, bbStart.vx, bbEnd.vx)]
+  const az = [a0(bbStart.h, bbEnd.h, bbStart.vz, bbEnd.vz), a1(bbStart.h, bbEnd.h, bbStart.vz, bbEnd.vz)]
+  console.log(
+    `Booster: boostback ${(bbStart.x / 1000).toFixed(1)} → ${(bbEnd.x / 1000).toFixed(1)} km downrange, v ${bbStart.vx.toFixed(0)} → ${bbEnd.vx.toFixed(0)} m/s, ` +
+      `accel ${ax.map((a, i) => (Math.hypot(a, az[i] + 9.6) / 9.81).toFixed(1)).join(' → ')} g`,
+  )
+}
 const booster: Sample[] = []
 const bEnd = tBoosterSplash + 60
 for (let t = 0; t <= bEnd; t += DT) {
@@ -487,18 +526,26 @@ for (let t = 0; t <= bEnd; t += DT) {
     booster.push({ t, r: a.r, pitch: 0, heading: a.bearing })
     continue
   }
-  const x = bXF(t)
-  const h = Math.max(0, bAltF(t))
+  let x: number
+  let h: number
+  if (t < tBbS) ({ x, h } = coast[t - tStage])
+  else if (t < tBbE) {
+    const T = tBbE - tBbS
+    const k = (t - tBbS) / T
+    x = hermite(bbStart.x, bbEnd.x, bbStart.vx * T, bbEnd.vx * T, k)
+    h = hermite(bbStart.h, bbEnd.h, bbStart.vz * T, bbEnd.vz * T, k)
+  } else {
+    x = bXF(t)
+    h = bAltF(t)
+  }
   const d = destination(pad.lat, pad.lon, azimuth, x)
-  booster.push({ t, r: geoToEcef(d.lat, d.lon, h), pitch: 0, heading: d.bearing })
+  booster.push({ t, r: geoToEcef(d.lat, d.lon, Math.max(0, h)), pitch: 0, heading: d.bearing })
 }
 
 // ───────────────────────── derived channels ─────────────────────────
 function attitudeBooster(t: number, γ: number, vzDown: boolean) {
-  const tBbS = ev('boostback-start').t
-  const tBbE = ev('boostback-end').t
   if (t <= tStage) return γ
-  if (t < tBbS + 8) return lerpAngle(γ, 168, smoothstep(tStage, tBbS + 8, t))
+  if (t < FLIP_END) return lerpAngle(γ, 168, smoothstep(tStage, FLIP_END, t))
   if (t < tBbE) return 168
   // reorient engines-down for descent
   const k = smoothstep(tBbE, tBbE + 25, t)

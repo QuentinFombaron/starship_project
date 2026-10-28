@@ -112,54 +112,49 @@
   ],
   "booster": [
     {
-      "t": 165,
-      "altKm": 70,
-      "downrangeKm": 80
-    },
-    {
       "t": 187,
       "altKm": 81,
-      "downrangeKm": 81
+      "downrangeKm": 90
     },
     {
       "t": 230,
       "altKm": 91,
-      "downrangeKm": 70
+      "downrangeKm": 74
     },
     {
       "t": 270,
       "altKm": 88,
-      "downrangeKm": 55
+      "downrangeKm": 59
     },
     {
       "t": 310,
       "altKm": 72,
-      "downrangeKm": 40
+      "downrangeKm": 44
     },
     {
       "t": 345,
       "altKm": 46,
-      "downrangeKm": 26
+      "downrangeKm": 31
     },
     {
       "t": 365,
       "altKm": 23,
-      "downrangeKm": 17
+      "downrangeKm": 23
     },
     {
       "t": 382,
       "altKm": 8.5,
-      "downrangeKm": 12
+      "downrangeKm": 16.5
     },
     {
       "t": 396,
       "altKm": 2.0,
-      "downrangeKm": 10
+      "downrangeKm": 12
     },
     {
       "t": 408,
       "altKm": 0.3,
-      "downrangeKm": 9.3
+      "downrangeKm": 9.8
     },
     {
       "t": 416,

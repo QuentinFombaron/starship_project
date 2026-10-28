@@ -6,6 +6,7 @@ import { clamp, smoothstep } from '../../sim/interpolate'
 import { BOOSTER_LEN, SHIP_LEN, useReplay, type Vehicle } from '../../sim/replay'
 import { quatFromBasis, toV3 } from '../frame'
 import { live } from '../live'
+import { HotStageVents, hotStagingTimes } from '../effects/HotStaging'
 import { EngineGlows, Plume } from '../effects/Plume'
 import { headerLevel, pezDoor, propLevels, starlinksAboard, useInspect, xrayOn } from '../inspect/data'
 import { GlbOverride } from './GlbOverride'
@@ -73,6 +74,7 @@ export function BoosterActor() {
       <HitProxy id="booster" radius={4.8} y0={-BOOSTER_LEN / 2 + 4.5} y1={BOOSTER_LEN / 2} />
       <HitProxy id="booster-engines" radius={5.1} y0={-BOOSTER_LEN / 2 - 1} y1={-BOOSTER_LEN / 2 + 4.5} />
       {xray && <TankXray vehicle="booster" />}
+      <HotStageVents />
       <group position={[0, bottom, 0]}>
         {!glb && <EngineGlows points={pts} y={0.05} size={0.62} statusRef={status} />}
         <Plume intensityRef={plumeI} expansionRef={plumeE} radius={4.6} length={120} />
@@ -81,8 +83,36 @@ export function BoosterActor() {
   )
 }
 
+/**
+ * Hot staging, ship side: while latched the exhaust is trapped in the interstage and leaves through the ring's
+ * vents (see HotStageVents), then the plume ends on the booster's dome until the flip turns it away.
+ */
+function useStagingPlume(plumeI: React.RefObject<number>) {
+  const replay = useReplay()
+  const { separation } = useMemo(() => hotStagingTimes(replay), [replay])
+  const maxLen = useRef(Infinity)
+  const d = useMemo(() => new THREE.Vector3(), [])
+  useFrame(() => {
+    const t = useClock.getState().t
+    maxLen.current = Infinity
+    if (t < separation - 10 || t > separation + 20) return
+    if (t < separation) {
+      plumeI.current = 0
+      return
+    }
+    const b = live.booster
+    const s = live.ship
+    d.copy(b.com).addScaledVector(b.nose, BOOSTER_LEN / 2).sub(s.com).addScaledVector(s.nose, SHIP_LEN / 2)
+    const behind = -d.dot(s.nose)
+    // (the models overlap by ~0.5 m at the interface)
+    if (b.nose.dot(s.nose) > 0.3 && behind > -3) maxLen.current = Math.max(0, behind) + 1
+  }, PRIORITY + 1)
+  return maxLen
+}
+
 export function ShipActor() {
   const { group, plumeI, plumeE, status } = useVehicleDriver('ship')
+  const plumeMax = useStagingPlume(plumeI)
   const pts = useMemo(shipEnginePositions, [])
   const [glb, setGlb] = useState(false)
   const bottom = -SHIP_LEN / 2 - (glb ? 0 : 2.6)
@@ -107,7 +137,7 @@ export function ShipActor() {
             <EngineGlows points={pts.slice(3)} y={-0.7} size={1.1} statusRef={status} offset={3} />
           </>
         )}
-        <Plume intensityRef={plumeI} expansionRef={plumeE} radius={3.8} length={55} vacuumBlue />
+        <Plume intensityRef={plumeI} expansionRef={plumeE} radius={3.8} length={55} vacuumBlue maxLengthRef={plumeMax} />
       </group>
       <ReentryPlasma />
     </group>

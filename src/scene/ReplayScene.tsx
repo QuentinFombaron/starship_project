@@ -21,6 +21,7 @@ import { live } from './live'
 import { OLP2, PadFrame, StarbaseSite } from './Starbase/Starbase'
 import { SurfaceCap } from './Starbase/Surface'
 import { BoosterActor, ShipActor } from './vehicles/Actors'
+import './shadowPrecision'
 
 function SunAndLights({ sunDir }: { sunDir: React.RefObject<THREE.Vector3> }) {
   const replay = useReplay()

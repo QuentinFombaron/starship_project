@@ -36,6 +36,8 @@ export class Replay {
   readonly tEnd: number
   readonly launchDate: Date
   readonly data: ReplayData
+  /** Stack axis at separation: each stage's offset from the shared telemetry point stays along it. */
+  readonly stageAxis: Vec3
   constructor(data: ReplayData) {
     this.data = data
     this.booster = new TrackSampler(data.telemetry.booster)
@@ -43,6 +45,8 @@ export class Replay {
     this.tStage = this.event('hot-staging')?.t ?? 160
     this.tEnd = Math.max(this.ship.tEnd, this.booster.tEnd)
     this.launchDate = new Date(data.mission.launchTime)
+    const s = this.ship.sample(this.tStage)
+    this.stageAxis = bodyBasis(s.lat, s.lon, s.heading, s.pitch).nose
   }
 
   event(id: string): TimelineEvent | undefined {
@@ -83,10 +87,11 @@ export class Replay {
       b.belly = belly
     }
     const L = vehicle === 'booster' ? BOOSTER_LEN : SHIP_LEN
-    // telemetry point = interstage during ascent; it relaxes to each stage's centre of mass after staging
+    // telemetry point = interstage during ascent; it relaxes to each stage's centre of mass after staging.
+    // The offset keeps the separation-time axis so the flipping booster turns about its own centre of mass.
     const k = smoothstep(this.tStage, this.tStage + 40, t)
     const sign = vehicle === 'booster' ? -1 : 1
-    let com = add(s.pos, scale(b.nose, (sign * (1 - k) * L) / 2))
+    let com = add(s.pos, scale(t > this.tStage ? this.stageAxis : b.nose, (sign * (1 - k) * L) / 2))
     // lift the stack onto the launch mount near the pad, and stages above the water at splashdown
     const padLift = (MOUNT_HEIGHT + BOOSTER_LEN) * (1 - smoothstep(1500, 9000, s.alt)) * (t < this.tStage ? 1 : 0)
     const nearSurface = t > this.tStage + 40 ? (1 - smoothstep(0, 400, s.alt)) * (L / 2) * Math.abs(b.nose[0] * b.up[0] + b.nose[1] * b.up[1] + b.nose[2] * b.up[2]) : 0

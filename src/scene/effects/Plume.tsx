@@ -58,8 +58,10 @@ void main() {
   vec3 col = mix(edgeColor, coreColor, core) * (fade * (0.55 + core) + diamonds);
   // sea-level plumes are much brighter (and must read against a daylight sky)
   float bright = mix(3.2, 1.4, expansion);
-  float a = clamp(fade * core * intensity * flicker, 0.0, 1.0);
-  gl_FragColor = vec4(max(col * intensity * flicker * fade * (0.4 + core) * bright, vec3(0.0)), a);
+  // a camera inside a wide vacuum plume would otherwise see a wall-to-wall haze
+  float near = mix(1.0, smoothstep(8.0, 90.0, length(vViewPos)), expansion);
+  float a = clamp(fade * core * intensity * flicker * near, 0.0, 1.0);
+  gl_FragColor = vec4(max(col * intensity * flicker * fade * (0.4 + core) * bright * near, vec3(0.0)), a);
 }
 `
 
@@ -69,12 +71,15 @@ export function Plume({
   radius,
   length,
   vacuumBlue = false,
+  maxLengthRef,
 }: {
   intensityRef: React.RefObject<number>
   expansionRef: React.RefObject<number>
   radius: number
   length: number
   vacuumBlue?: boolean
+  /** Caps the plume length, e.g. where it hits something. */
+  maxLengthRef?: React.RefObject<number>
 }) {
   const ref = useRef<THREE.Mesh>(null)
   const geom = useMemo(() => {
@@ -110,7 +115,7 @@ export function Plume({
     mat.uniforms.expansion.value = e
     mat.uniforms.time.value = state.clock.elapsedTime
     // plume length grows a lot in vacuum
-    mat.uniforms.plumeLen.value = length * (1 + e * 5)
+    mat.uniforms.plumeLen.value = Math.min(length * (1 + e * 5), maxLengthRef?.current ?? Infinity)
     mat.uniforms.edgeColor.value.set(e > 0.6 || vacuumBlue ? '#6f8dff' : '#ff8a3c').lerp(new THREE.Color('#ff8a3c'), 1 - e)
     if (ref.current) ref.current.visible = i > 0.01
   })
