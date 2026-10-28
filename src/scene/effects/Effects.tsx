@@ -5,6 +5,7 @@ import { useClock } from '../../sim/clock'
 import { clamp, smoothstep } from '../../sim/interpolate'
 import { BOOSTER_LEN, MOUNT_HEIGHT, useReplay } from '../../sim/replay'
 import { live } from '../live'
+import { DECK_Y, PAD_B_YAW } from '../Starbase/PadB'
 import { PadFrame } from '../Starbase/Starbase'
 import { ParticleBurst } from './Particles'
 
@@ -42,8 +43,12 @@ function Flash({ at, intensity, size, color }: { at: () => THREE.Vector3; intens
   )
 }
 
+/** Pad B's flame trench axis in the pad frame (it runs along the pad group's local z). */
+const TRENCH = [Math.sin(PAD_B_YAW), 0, Math.cos(PAD_B_YAW)] as const
+
 export function Effects() {
   const replay = useReplay()
+  const tDeluge = replay.t('deluge', -10)
   const tel = replay.data.telemetry
   const boosterEnd = { lat: tel.booster.lat.at(-1)!, lon: tel.booster.lon.at(-1)! }
   const shipEnd = { lat: tel.ship.lat.at(-1)!, lon: tel.ship.lon.at(-1)! }
@@ -58,9 +63,17 @@ export function Effects() {
   return (
     <>
       <PadFrame>
-        {/* deluge steam + exhaust cloud rolling out of the flame trench */}
-        <ParticleBurst t0={-5} spawn={28} life={55} count={520} speed={55} spread={0.92} rise={3} size={[18, 110]} color="#f2efea" color2="#a9a59e" opacity={0.55} drag={4} dirBias={[-0.6, 0, 0.1]} />
-        <ParticleBurst t0={-2.5} spawn={10} life={4} count={260} speed={70} spread={1} rise={4} size={[8, 34]} color="#ffd8a0" color2="#ff7a30" additive opacity={0.9} drag={1.2} dirBias={[-0.4, 0, 0]} />
+        {/* deluge: water jets up through the steel deck and the diverter from T-10 s */}
+        <group position={[0, DECK_Y, 0]}>
+          <ParticleBurst t0={tDeluge} spawn={32} life={2.6} count={520} speed={16} spread={0.3} rise={-3} size={[0.6, 4]} color="#eef6fa" color2="#b9d3df" opacity={0.5} drag={0.9} />
+        </group>
+        {/* deluge steam + exhaust cloud rolling out of both flame-trench exits */}
+        {[1, -1].map((s) => (
+          <group key={s}>
+            <ParticleBurst t0={-5} spawn={28} life={55} count={280} speed={55} spread={0.92} rise={3} size={[18, 110]} color="#f2efea" color2="#a9a59e" opacity={0.55} drag={4} dirBias={[s * TRENCH[0] * 0.75, 0, s * TRENCH[2] * 0.75]} />
+            <ParticleBurst t0={-2.5} spawn={10} life={4} count={140} speed={70} spread={1} rise={4} size={[8, 34]} color="#ffd8a0" color2="#ff7a30" additive opacity={0.9} drag={1.2} dirBias={[s * TRENCH[0] * 0.6, 0, s * TRENCH[2] * 0.6]} />
+          </group>
+        ))}
         <group position={[0, MOUNT_HEIGHT, 0]}>
           <ParticleBurst t0={-1} spawn={8} life={14} count={160} speed={10} spread={0.2} rise={8} size={[6, 40]} color="#ffffff" color2="#c9c5bd" opacity={0.45} drag={2} />
         </group>

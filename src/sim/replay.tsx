@@ -9,8 +9,8 @@ import { add, scale, type Vec3 } from './coords'
 export const BOOSTER_LEN = 72.3
 export const SHIP_LEN = 52.1
 export const DIAMETER = 9
-/** Height of the engine plane above ground when sitting on the OLM. */
-export const MOUNT_HEIGHT = 22
+/** Height of the engine exit plane above ground when sitting on the launch mount (Pad B, ~16–20 m). */
+export const MOUNT_HEIGHT = 20
 
 export type Vehicle = 'booster' | 'ship'
 

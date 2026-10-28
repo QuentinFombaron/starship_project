@@ -54,8 +54,8 @@ export function StarlinkDeploy() {
           .addScaledVector(right, (((i * 7) % 11) - 5) * 0.004 * Math.max(0, age - 6) + Math.sin(i) * 0.3)
           .addScaledVector(s.nose, -0.06 * Math.max(0, age - 6) * ((i % 4) - 1.5))
         o.position.copy(off)
+        // flat slabs, long side around the hull, leaving through the horizontal dispenser slot
         o.quaternion.copy(s.quat)
-        o.rotateOnAxis(new THREE.Vector3(0, 0, 1), Math.PI / 2)
         o.rotateY(Math.max(0, age - 6) * 0.01 * ((i % 3) - 1))
         o.scale.setScalar(1)
         visible++

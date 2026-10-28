@@ -1,80 +1,129 @@
 import * as THREE from 'three'
 
-/** Sentinel-2 cloudless (2016) tiles bundled in /public, zoom 14, Web Mercator. */
+/** Zoom-14 Web Mercator tile block that bounds the ground patch, the DEM and the outer imagery layer. */
 export const TILES = { z: 14, x0: 3766, x1: 3773, y0: 6962, y1: 6969 }
-export const IMAGERY_CREDIT = 'Sentinel-2 cloudless 2016 by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2016), CC BY 4.0'
+export const IMAGERY_CREDIT =
+  'Ground imagery: USDA NAIP 2022 via the USGS National Map (public domain), gaps filled with Sentinel-2 cloudless 2016 by EOX (CC BY 4.0). Terrain: AWS Terrain Tiles (USGS 3DEP, SRTM, GMTED)'
 
 const n = 2 ** TILES.z
 export const tileLon = (x: number) => (x / n) * 360 - 180
 export const tileLat = (y: number) => (Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / n))) * 180) / Math.PI
-export const mercY = (lat: number) => ((1 - Math.asinh(Math.tan((lat * Math.PI) / 180)) / Math.PI) / 2) * n
+const mercY = (lat: number) => Math.asinh(Math.tan((lat * Math.PI) / 180))
 
-export const BOUNDS = {
+export interface GeoBounds {
+  west: number
+  east: number
+  north: number
+  south: number
+}
+
+export const BOUNDS: GeoBounds = {
   west: tileLon(TILES.x0),
   east: tileLon(TILES.x1 + 1),
   north: tileLat(TILES.y0),
   south: tileLat(TILES.y1 + 1),
 }
 
-/** UV (0..1, v up) of a lat/lon inside the stitched imagery. */
-export function imageryUv(lat: number, lon: number): [number, number] {
-  const u = (lon - BOUNDS.west) / (BOUNDS.east - BOUNDS.west)
-  const yTile = mercY(lat)
-  const v = 1 - (yTile - TILES.y0) / (TILES.y1 + 1 - TILES.y0)
+/** UV (0..1, v up) of a lat/lon inside a Web Mercator image covering `b`. */
+export function mercUv(b: GeoBounds, lat: number, lon: number): [number, number] {
+  const u = (lon - b.west) / (b.east - b.west)
+  const v = (mercY(lat) - mercY(b.south)) / (mercY(b.north) - mercY(b.south))
   return [u, v]
 }
 
-const loadImg = (src: string) =>
-  new Promise<HTMLImageElement>((res, rej) => {
-    const img = new Image()
-    img.onload = () => res(img)
-    img.onerror = rej
-    img.src = src
-  })
+export interface ImageryLayer {
+  bounds: GeoBounds
+  map: THREE.Texture
+}
 
-let cache: Promise<{ map: THREE.Texture; roughness: THREE.Texture }> | null = null
+export interface StarbaseTerrain {
+  outer: ImageryLayer
+  mid: ImageryLayer
+  inner: ImageryLayer
+  /** DEM over BOUNDS: R/G = 16-bit height, B = water mask. */
+  demTex: THREE.Texture
+  /** Distance from the shore into the water, 0..255 px of ~8.6 m. */
+  shoreTex: THREE.Texture
+  /** Height in metres above sea level (bilinear). */
+  height(lat: number, lon: number): number
+  /** 0 = land, 1 = water (bilinear). */
+  water(lat: number, lon: number): number
+}
 
-/** Stitches the tiles into one texture and derives a roughness map (water = glossy). */
-export function loadStarbaseImagery() {
+const loadBitmap = async (src: string) => {
+  const blob = await (await fetch(src)).blob()
+  // no colour management: the DEM's channels are data, not colour
+  return createImageBitmap(blob, { colorSpaceConversion: 'none', premultiplyAlpha: 'none' })
+}
+
+const loadTexture = (src: string, srgb = true) =>
+  new Promise<THREE.Texture>((res, rej) =>
+    new THREE.TextureLoader().load(
+      src,
+      (t) => {
+        if (srgb) t.colorSpace = THREE.SRGBColorSpace
+        t.anisotropy = 8
+        res(t)
+      },
+      undefined,
+      rej,
+    ),
+  )
+
+let cache: Promise<StarbaseTerrain> | null = null
+
+/**
+ * Loads the baked ground (see scripts/bake-imagery.py): three nested NAIP layers (~4.4 m, 2.1 m and 0.5 m
+ * per pixel), a lidar DEM with a water mask, and a shore-distance field.
+ */
+export function loadStarbaseTerrain() {
   if (cache) return cache
   cache = (async () => {
-    const cols = TILES.x1 - TILES.x0 + 1
-    const rows = TILES.y1 - TILES.y0 + 1
-    const size = 256
+    const base = '/textures/starbase'
+    const meta = (await (await fetch(`${base}/layers.json`)).json()) as Record<'outer' | 'mid' | 'inner', GeoBounds>
+    const [outer, mid, inner, demBmp, shoreTex] = await Promise.all([
+      loadTexture(`${base}/naip_outer.jpg`),
+      loadTexture(`${base}/naip_mid.jpg`),
+      loadTexture(`${base}/naip_inner.jpg`),
+      loadBitmap(`${base}/dem.png`),
+      loadTexture(`${base}/shore.png`, false),
+    ])
+    const w = demBmp.width
+    const h = demBmp.height
     const canvas = document.createElement('canvas')
-    canvas.width = cols * size
-    canvas.height = rows * size
+    canvas.width = w
+    canvas.height = h
     const ctx = canvas.getContext('2d', { willReadFrequently: true })!
-    const jobs: Promise<void>[] = []
-    for (let y = TILES.y0; y <= TILES.y1; y++)
-      for (let x = TILES.x0; x <= TILES.x1; x++)
-        jobs.push(
-          loadImg(`/textures/starbase/${TILES.z}_${x}_${y}.jpg`).then((img) => {
-            ctx.drawImage(img, (x - TILES.x0) * size, (y - TILES.y0) * size)
-          }),
-        )
-    await Promise.all(jobs)
-    const rc = document.createElement('canvas')
-    rc.width = canvas.width / 2
-    rc.height = canvas.height / 2
-    const rctx = rc.getContext('2d')!
-    rctx.drawImage(canvas, 0, 0, rc.width, rc.height)
-    const id = rctx.getImageData(0, 0, rc.width, rc.height)
-    const d = id.data
-    for (let i = 0; i < d.length; i += 4) {
-      const r = d[i]
-      const g = d[i + 1]
-      const b = d[i + 2]
-      const water = b > r + 6 && g >= r && r < 120
-      const v = water ? 40 : 235
-      d[i] = d[i + 1] = d[i + 2] = v
+    ctx.drawImage(demBmp, 0, 0)
+    const px = ctx.getImageData(0, 0, w, h).data
+    const heights = new Float32Array(w * h)
+    const wet = new Float32Array(w * h)
+    for (let i = 0; i < w * h; i++) {
+      heights[i] = (px[i * 4] * 256 + px[i * 4 + 1]) / 100 - 100
+      wet[i] = px[i * 4 + 2] / 255
     }
-    rctx.putImageData(id, 0, 0)
-    const map = new THREE.CanvasTexture(canvas)
-    map.colorSpace = THREE.SRGBColorSpace
-    map.anisotropy = 8
-    const roughness = new THREE.CanvasTexture(rc)
-    return { map, roughness }
+    const demTex = new THREE.CanvasTexture(canvas)
+    demTex.colorSpace = THREE.NoColorSpace
+    const bilinear = (a: Float32Array, lat: number, lon: number) => {
+      const [u, v] = mercUv(BOUNDS, lat, lon)
+      const x = Math.min(w - 1.001, Math.max(0, u * w - 0.5))
+      const y = Math.min(h - 1.001, Math.max(0, (1 - v) * h - 0.5))
+      const i = Math.floor(x)
+      const j = Math.floor(y)
+      const fx = x - i
+      const fy = y - j
+      const k = j * w + i
+      return (a[k] * (1 - fx) + a[k + 1] * fx) * (1 - fy) + (a[k + w] * (1 - fx) + a[k + w + 1] * fx) * fy
+    }
+    return {
+      outer: { bounds: meta.outer, map: outer },
+      mid: { bounds: meta.mid, map: mid },
+      inner: { bounds: meta.inner, map: inner },
+      demTex,
+      shoreTex,
+      height: (lat, lon) => bilinear(heights, lat, lon),
+      water: (lat, lon) => bilinear(wet, lat, lon),
+    }
   })()
   return cache
 }

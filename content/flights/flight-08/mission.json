@@ -8,8 +8,8 @@
     "name": "Starbase, Texas",
     "pad": "OLP-1",
     "position": {
-      "lat": 25.9967,
-      "lon": -97.1572
+      "lat": 25.9962,
+      "lon": -97.1544
     }
   },
   "vehicles": {
@@ -65,8 +65,8 @@
   "boosterFate": "Caught by the OLP-1 tower chopsticks at T+7:02. Reflown on Flight 11.",
   "shipFate": "Lost engines and attitude control late in ascent; destroyed around T+9:35 over the Caribbean.",
   "boosterLanding": {
-    "lat": 25.9967,
-    "lon": -97.1572
+    "lat": 25.9962,
+    "lon": -97.1544
   },
   "durationSec": 575,
   "stats": [

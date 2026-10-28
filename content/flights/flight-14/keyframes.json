@@ -1,5 +1,5 @@
 {
-  "notes": "No HUD telemetry has been published for Flight 14. Ascent anchors follow typical Block 3 profiles; the coast at T+45 min (26,380 km/h, 274 km) and the orbit (262 \u00d7 275 km, 30.5\u00b0) are reported values.",
+  "notes": "No HUD telemetry has been published for Flight 14. Ascent anchors follow typical Block 3 profiles; the coast at T+45 min (26,380 km/h, 274 km) and the orbit (262 × 275 km, 30.5°) are reported values.",
   "targets": {
     "perigeeKm": 262,
     "apogeeKm": 275,
@@ -16,7 +16,7 @@
     {
       "t": 10,
       "altKm": 0.22,
-      "speedKmh": 160
+      "speedKmh": 130
     },
     {
       "t": 20,
@@ -157,12 +157,12 @@
       "downrangeKm": 10
     },
     {
-      "t": 410,
+      "t": 408,
       "altKm": 0.3,
       "downrangeKm": 9.3
     },
     {
-      "t": 421,
+      "t": 416,
       "altKm": 0,
       "downrangeKm": 9.2
     }

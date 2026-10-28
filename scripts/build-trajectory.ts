@@ -87,7 +87,60 @@ function kinematicAltSpeed(anchors: { t: number; altKm?: number; speedKmh?: numb
     s.map((x) => x.t),
     s.map((x) => x.speedKmh! / 3.6),
   )
-  return { alt, spd }
+  // PCHIP leaves the pad already climbing at ~20 m/s; start from rest instead with a cubic that meets the
+  // first airborne anchor in value and slope (constant-ish ~0.45 g net acceleration off the mount)
+  const t1 = a.find((x) => x.t > 0)?.t ?? 10
+  const h1 = alt(t1)
+  const m1 = (alt(t1 + 0.01) - alt(t1 - 0.01)) / 0.02
+  const liftoffAlt = (t: number) => {
+    if (t <= 0) return 0
+    if (t >= t1) return alt(t)
+    const k = t / t1
+    return Math.max(0, h1 * (3 * k * k - 2 * k * k * k) + m1 * t1 * (k * k * k - k * k))
+  }
+  return { alt: liftoffAlt, spd }
+}
+
+/**
+ * Horizontal speed for the ascent. Altitude and speed come from independent splines, so the raw
+ * sqrt(v² − vz²) flickers between zero and tens of m/s and the stack would lurch sideways. Instead: hold
+ * vertical until the tower is cleared, then follow a non-decreasing, smoothed envelope of the raw value.
+ */
+const PITCH_KICK = 9
+function horizontalSpeed(t0: number, t1: number, alt: (t: number) => number, spd: (t: number) => number) {
+  const step = 0.1
+  const n = Math.ceil((t1 + 4 - t0) / step) + 1
+  const raw = new Float64Array(n)
+  let peak = 0
+  for (let i = 0; i < n; i++) {
+    const t = t0 + i * step
+    const vz = (alt(t + 0.25) - alt(t - 0.25)) / 0.5
+    const v = spd(t)
+    const vh = t < PITCH_KICK ? 0 : Math.sqrt(Math.max(0, v * v - vz * vz))
+    peak = Math.max(peak, vh)
+    raw[i] = peak
+  }
+  const w = Math.round(3 / step)
+  const out = new Float64Array(n)
+  for (let i = 0; i < n; i++) {
+    let s = 0
+    let c = 0
+    for (let j = Math.max(0, i - w); j <= Math.min(n - 1, i + w); j++, c++) s += raw[j]
+    out[i] = (s / c) * smoothstep(PITCH_KICK, PITCH_KICK + 10, t0 + i * step)
+  }
+  // a gravity turn never pitches back up: keep the flight-path angle non-increasing while near the pad
+  let γMin = Math.PI / 2
+  for (let i = 0; i < n; i++) {
+    const t = t0 + i * step
+    const vz = (alt(t + 0.25) - alt(t - 0.25)) / 0.5
+    if (t > PITCH_KICK + 2 && t < 90 && vz > 0) out[i] = Math.max(out[i], vz / Math.tan(γMin))
+    γMin = Math.min(γMin, Math.atan2(vz, Math.max(out[i], 1e-3)))
+  }
+  return (t: number) => {
+    const f = clamp((t - t0) / step, 0, n - 1)
+    const i = Math.min(n - 2, Math.floor(f))
+    return out[i] + (out[i + 1] - out[i]) * (f - i)
+  }
 }
 
 /** Integrates ground track for a given altitude/speed profile. Returns ECEF samples. */
@@ -98,20 +151,18 @@ function integrateAscent(t0: number, t1: number, azimuth: number, alt: (t: numbe
   let bearing = azimuth
   let downrange = 0
   const steps = 10
+  const hspd = horizontalSpeed(t0, t1, alt, spd)
   for (let t = t0; t <= t1 + 1e-9; t += DT) {
     const h = alt(t)
     const vz = (alt(t + 0.25) - alt(t - 0.25)) / 0.5
-    const v = spd(t)
-    const vh = Math.sqrt(Math.max(0, v * v - vz * vz))
+    const vh = hspd(t)
     const γ = Math.atan2(vz, Math.max(vh, 1e-3)) / DEG
     out.push({ t, r: geoToEcef(lat, lon, h), pitch: γ, heading: bearing, downrange, vz, vh, lat, lon, bearing })
     // advance ground position with sub-steps (ground speed scaled to surface)
     for (let k = 0; k < steps; k++) {
       const tt = t + (k * DT) / steps
       const hh = alt(tt)
-      const vzz = (alt(tt + 0.25) - alt(tt - 0.25)) / 0.5
-      const vv = spd(tt)
-      const vhh = Math.sqrt(Math.max(0, vv * vv - vzz * vzz))
+      const vhh = hspd(tt)
       const ds = ((vhh * DT) / steps) * (R_EARTH / (R_EARTH + hh))
       if (ds < 0.01) continue
       const d = destination(lat, lon, bearing, ds)

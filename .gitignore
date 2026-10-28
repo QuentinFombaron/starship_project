@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 public/maplibre
+
+# Pad reference photos: mostly all-rights-reserved, for local modelling reference only (see reference/pad-b/SOURCES.md)
+reference/
+.venv/

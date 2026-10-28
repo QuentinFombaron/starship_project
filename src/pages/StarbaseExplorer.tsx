@@ -5,13 +5,13 @@ import { Link } from 'react-router'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { IMAGERY_CREDIT, MODEL_CREDIT } from '../scene/Starbase/imagery'
-import { localFromGeo, StarbaseSite } from '../scene/Starbase/Starbase'
+import { FACTORY, PAD1, WATER_LEVEL, localFromGeo, StarbaseSite } from '../scene/Starbase/Starbase'
 import { GlbOverride } from '../scene/vehicles/GlbOverride'
 import { Starship, SuperHeavy } from '../scene/vehicles/Vehicles'
 import { BOOSTER_LEN, MOUNT_HEIGHT, SHIP_LEN } from '../sim/replay'
 
-const pad1 = localFromGeo(25.9967, -97.1572)
-const factory = localFromGeo(25.9885, -97.1866)
+const pad1 = localFromGeo(PAD1.lat, PAD1.lon)
+const factory = localFromGeo(FACTORY.lat, FACTORY.lon)
 
 const POIS: { id: string; label: string; text: string; target: [number, number, number]; cam: [number, number, number] }[] = [
   {
@@ -25,8 +25,8 @@ const POIS: { id: string; label: string; text: string; target: [number, number, 
     id: 'chopsticks',
     label: 'Chopsticks',
     text: 'Mechazilla’s two arms stack the vehicles and catch returning boosters, and on future flights ships, out of the air.',
-    target: [-6, 112, 0],
-    cam: [40, 125, 60],
+    target: [5, 84, -17],
+    cam: [60, 96, 45],
   },
   {
     id: 'olm',
@@ -45,9 +45,9 @@ const POIS: { id: string; label: string; text: string; target: [number, number, 
   {
     id: 'tankfarm',
     label: 'Tank farm',
-    text: 'Vertical tanks hold liquid methane, liquid oxygen and liquid nitrogen. Propellant flows to the vehicle through the launch mount and the ship quick-disconnect arm.',
-    target: [-45, 15, 75],
-    cam: [40, 45, 160],
+    text: 'A long row of horizontal tanks between the two pads holds liquid oxygen, liquid methane and liquid nitrogen. Propellant flows to the vehicle through the launch mount quick-disconnects and the ship quick-disconnect arm.',
+    target: [300, 10, -46],
+    cam: [300, 90, 140],
   },
   {
     id: 'factory',
@@ -140,9 +140,10 @@ export default function StarbaseExplorer() {
           <Lightformer form="rect" intensity={5} color="#fff3e0" position={[30, 40, 20]} scale={[30, 10, 1]} target={[0, 0, 0]} />
         </Environment>
         <StarbaseSite />
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]} receiveShadow>
+        {/* sea and lagoons: the ground sinks below this wherever the lidar says water */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, WATER_LEVEL, 0]} receiveShadow>
           <circleGeometry args={[60000, 64]} />
-          <meshStandardMaterial color="#2c3e48" roughness={0.6} metalness={0.1} />
+          <meshStandardMaterial color="#2d4f57" roughness={0.18} metalness={0.15} />
         </mesh>
         {showStack && (
           <>

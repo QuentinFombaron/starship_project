@@ -5,7 +5,9 @@ import { useSettings, type CameraMode } from '../../lib/settings'
 import { useClock } from '../../sim/clock'
 import { R_EARTH } from '../../sim/coords'
 import { clamp } from '../../sim/interpolate'
-import { BOOSTER_LEN, SHIP_LEN, useReplay, type Replay } from '../../sim/replay'
+import { BOOSTER_LEN, SHIP_LEN, useReplay, type Replay, type Vehicle } from '../../sim/replay'
+import { pick } from '../inspect/InspectController'
+import { useInspect } from '../inspect/data'
 import { live } from '../live'
 import { OLP2 } from '../Starbase/Starbase'
 import { geoToEcef, enuBasis } from '../../sim/coords'
@@ -47,21 +49,38 @@ const DEFAULTS: Record<string, { az: number; el: number; dist: number }> = {
 
 /** Rig state mutated by input handlers; read every frame. */
 const rig = {
-  az: 0.4,
-  el: 0.15,
-  dist: 200,
   userAz: 0,
   userEl: 0,
   userZoom: 1,
+  zoomGoal: 1,
+  /** orbit inertia (rad/s) after a drag is released */
+  velAz: 0,
+  velEl: 0,
+  dragging: false,
   lastInput: -1e9,
+  // free roam
   freeTarget: new THREE.Vector3(),
   freeInit: false,
+  /** smooth fly-to destination after a double-click */
+  flyTo: null as THREE.Vector3 | null,
+  /** vehicle the free camera rides along with, and the target's offset from it */
+  follow: null as Vehicle | null,
+  followOffset: new THREE.Vector3(),
+  moveVel: new THREE.Vector3(),
+  keys: new Set<string>(),
+}
+
+/** Free camera: lock onto a vehicle (keeping the current target offset) or release it. */
+function setFollow(v: Vehicle | null) {
+  if (v) rig.followOffset.copy(rig.freeTarget).sub(live[v].com)
+  rig.follow = v
 }
 
 export function CameraRig() {
   const replay = useReplay()
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera
   const gl = useThree((s) => s.gl)
+  const scene = useThree((s) => s.scene)
   const mode = useSettings((s) => s.camera)
   const lastMode = useRef<string>('')
   const v = useMemo(
@@ -85,10 +104,13 @@ export function CameraRig() {
     const pointers = new Map<number, { x: number; y: number }>()
     let pinch = 0
     let button = 0
+    let lastMove = 0
     const down = (e: PointerEvent) => {
       el.setPointerCapture(e.pointerId)
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
       button = e.button
+      rig.dragging = true
+      rig.velAz = rig.velEl = 0
       if (pointers.size === 2) {
         const [a, b] = [...pointers.values()]
         pinch = Math.hypot(a.x - b.x, a.y - b.y)
@@ -105,78 +127,134 @@ export function CameraRig() {
       if (pointers.size === 2) {
         const [a, b] = [...pointers.values()]
         const d = Math.hypot(a.x - b.x, a.y - b.y)
-        if (pinch) rig.userZoom = clamp(rig.userZoom * (pinch / d), 0.02, 400)
+        if (pinch) rig.zoomGoal = clamp(rig.zoomGoal * (pinch / d), 0.005, 400)
         pinch = d
         return
       }
       const s = useSettings.getState()
-      if (s.camera === 'free' && (button === 2 || e.shiftKey)) {
+      if (s.camera === 'free' && (button === 2 || button === 1 || e.shiftKey)) {
         // pan the free target in the local horizontal plane
         const up = v.tmp.copy(rig.freeTarget).normalize()
         const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0)
         const fwd = new THREE.Vector3().crossVectors(up, right)
-        const k = rig.dist * rig.userZoom * 0.0015
-        rig.freeTarget.addScaledVector(right, -dx * k).addScaledVector(fwd, dy * k)
+        const k = DEFAULTS.free.dist * rig.userZoom * 0.0015
+        const d = new THREE.Vector3().addScaledVector(right, -dx * k).addScaledVector(fwd, dy * k)
+        rig.freeTarget.add(d)
+        rig.followOffset.add(d)
+        rig.flyTo = null
         return
       }
+      const now = performance.now()
+      const dt = Math.max(1, now - lastMove) / 1000
+      lastMove = now
       rig.userAz -= dx * 0.005
       rig.userEl = clamp(rig.userEl + dy * 0.004, -1.4, 1.4)
+      // remember the swipe speed so the orbit glides on after release
+      rig.velAz = THREE.MathUtils.lerp(rig.velAz, (-dx * 0.005) / dt, 0.5)
+      rig.velEl = THREE.MathUtils.lerp(rig.velEl, (dy * 0.004) / dt, 0.5)
     }
     const up = (e: PointerEvent) => {
       pointers.delete(e.pointerId)
       pinch = 0
+      rig.dragging = pointers.size > 0
+      if (performance.now() - lastMove > 80) rig.velAz = rig.velEl = 0
     }
     const wheel = (e: WheelEvent) => {
       e.preventDefault()
       rig.lastInput = performance.now()
-      rig.userZoom = clamp(rig.userZoom * Math.exp(e.deltaY * 0.0012), 0.02, 400)
+      rig.zoomGoal = clamp(rig.zoomGoal * Math.exp(e.deltaY * 0.0012), 0.005, 400)
+    }
+    const dbl = (e: MouseEvent) => {
+      if (useSettings.getState().camera !== 'free') return
+      const r = el.getBoundingClientRect()
+      const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1)
+      const hit = pick(ndc, camera, scene)
+      if (!hit) return
+      // double-click a vehicle to ride along with it, anything else to fly there
+      const veh: Vehicle | null = hit.id?.startsWith('booster') ? 'booster' : hit.id?.startsWith('ship') ? 'ship' : null
+      rig.flyTo = veh ? live[veh].com.clone() : hit.point.clone()
+      rig.follow = veh
+      rig.followOffset.set(0, 0, 0)
+      rig.zoomGoal = Math.min(rig.zoomGoal, veh ? 0.45 : 0.3)
     }
     const ctx = (e: Event) => e.preventDefault()
-    const keys = new Set<string>()
     const kd = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement)?.tagName === 'INPUT') return
-      keys.add(e.key.toLowerCase())
+      if ((e.target as HTMLElement)?.tagName === 'INPUT' || e.metaKey || e.ctrlKey) return
+      const k = e.key.toLowerCase()
+      if (k === 'escape') useInspect.getState().set({ pinned: null })
+      if (useSettings.getState().camera === 'free' && k === 't') setFollow(rig.follow === null ? 'booster' : rig.follow === 'booster' ? 'ship' : null)
+      rig.keys.add(k)
     }
-    const ku = (e: KeyboardEvent) => keys.delete(e.key.toLowerCase())
-    let raf = 0
-    const tick = () => {
-      if (useSettings.getState().camera === 'free' && keys.size) {
-        const upv = v.tmp.copy(rig.freeTarget).normalize()
-        const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0)
-        const fwd = new THREE.Vector3().crossVectors(upv, right)
-        const k = Math.max(2, rig.dist * rig.userZoom * 0.01)
-        if (keys.has('w')) rig.freeTarget.addScaledVector(fwd, k)
-        if (keys.has('s')) rig.freeTarget.addScaledVector(fwd, -k)
-        if (keys.has('a')) rig.freeTarget.addScaledVector(right, -k)
-        if (keys.has('d')) rig.freeTarget.addScaledVector(right, k)
-        if (keys.has('e')) rig.freeTarget.addScaledVector(upv, k)
-        if (keys.has('q')) rig.freeTarget.addScaledVector(upv, -k)
-      }
-      raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
+    const ku = (e: KeyboardEvent) => rig.keys.delete(e.key.toLowerCase())
+    const blur = () => rig.keys.clear()
     el.addEventListener('pointerdown', down)
     el.addEventListener('pointermove', move)
     el.addEventListener('pointerup', up)
     el.addEventListener('pointercancel', up)
     el.addEventListener('wheel', wheel, { passive: false })
+    el.addEventListener('dblclick', dbl)
     el.addEventListener('contextmenu', ctx)
     window.addEventListener('keydown', kd)
     window.addEventListener('keyup', ku)
+    window.addEventListener('blur', blur)
     return () => {
-      cancelAnimationFrame(raf)
       el.removeEventListener('pointerdown', down)
       el.removeEventListener('pointermove', move)
       el.removeEventListener('pointerup', up)
       el.removeEventListener('pointercancel', up)
       el.removeEventListener('wheel', wheel)
+      el.removeEventListener('dblclick', dbl)
       el.removeEventListener('contextmenu', ctx)
       window.removeEventListener('keydown', kd)
       window.removeEventListener('keyup', ku)
+      window.removeEventListener('blur', blur)
     }
-  }, [gl, camera, v])
+  }, [gl, camera, scene, v])
 
-  useFrame(() => {
+  /** WASD/QE flying with eased velocity, Shift to boost; following and fly-to targets. */
+  const freeRoam = (dt: number) => {
+    if (!rig.freeInit && live.ship.com.lengthSq() > 1) {
+      rig.freeTarget.copy(live.ship.com)
+      rig.freeInit = true
+    }
+    const k = rig.keys
+    const upv = v.tmp.copy(rig.freeTarget).normalize()
+    const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0)
+    right.addScaledVector(upv, -right.dot(upv)).normalize()
+    const fwd = new THREE.Vector3().crossVectors(upv, right)
+    const wish = new THREE.Vector3()
+    if (k.has('w')) wish.add(fwd)
+    if (k.has('s')) wish.sub(fwd)
+    if (k.has('d')) wish.add(right)
+    if (k.has('a')) wish.sub(right)
+    if (k.has('e')) wish.add(upv)
+    if (k.has('q')) wish.sub(upv)
+    // speed scales with how far out the camera is, so it feels the same from the pad to orbit
+    const speed = Math.max(6, DEFAULTS.free.dist * rig.userZoom * 0.9) * (k.has('shift') ? 5 : 1)
+    if (wish.lengthSq()) {
+      wish.normalize().multiplyScalar(speed)
+      rig.flyTo = null
+    }
+    rig.moveVel.lerp(wish, 1 - Math.exp(-dt * 6))
+    const step = rig.moveVel.clone().multiplyScalar(dt)
+    if (rig.follow) {
+      rig.followOffset.add(step)
+      if (rig.flyTo) rig.followOffset.multiplyScalar(Math.exp(-dt * 4))
+      rig.freeTarget.copy(live[rig.follow].com).add(rig.followOffset)
+    } else {
+      rig.freeTarget.add(step)
+      if (rig.flyTo) {
+        rig.freeTarget.lerp(rig.flyTo, 1 - Math.exp(-dt * 4))
+        if (rig.freeTarget.distanceTo(rig.flyTo) < 0.5) rig.flyTo = null
+      }
+    }
+    // never below the ground
+    const minR = R_EARTH + 1.5
+    if (rig.freeTarget.length() < minR) rig.freeTarget.setLength(minR)
+  }
+
+  useFrame((_, frameDt) => {
+    const dt = Math.min(frameDt, 0.1)
     const t = useClock.getState().t
     let shot: Shot
     if (mode === 'director') shot = directorShot(replay, t)
@@ -188,12 +266,19 @@ export function CameraRig() {
       // reset user offsets on a cut (keep zoom when switching manual modes)
       rig.userAz = 0
       rig.userEl = 0
-      if (mode === 'director') rig.userZoom = 1
+      rig.velAz = rig.velEl = 0
+      if (mode === 'director') rig.userZoom = rig.zoomGoal = 1
     }
-    if (shot.mode === 'free' && !rig.freeInit && live.ship.com.lengthSq() > 1) {
-      rig.freeTarget.copy(live.ship.com)
-      rig.freeInit = true
+    // smoothing: orbit inertia and eased zoom
+    if (!rig.dragging) {
+      rig.userAz += rig.velAz * dt
+      rig.userEl = clamp(rig.userEl + rig.velEl * dt, -1.4, 1.4)
+      const decay = Math.exp(-dt * 4)
+      rig.velAz *= decay
+      rig.velEl *= decay
     }
+    rig.userZoom *= Math.pow(rig.zoomGoal / rig.userZoom, 1 - Math.exp(-dt * 10))
+    if (shot.mode === 'free') freeRoam(dt)
 
     let fov = 50
     const vehicleOf = (m: string) => (m.includes('booster') ? live.booster : live.ship)

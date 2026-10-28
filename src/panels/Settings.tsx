@@ -96,7 +96,7 @@ export function SettingsDrawer() {
         </Group>
         <div className="space-y-3 px-5 py-5 text-[11px] leading-relaxed text-dim">
           <p>Telemetry is reconstructed from the reported timeline and orbit, not from raw SpaceX data. {replay.data.keyframes.notes}</p>
-          <p>Ground imagery: {IMAGERY_CREDIT}. Earth textures: NASA Blue Marble / Black Marble via three.js examples.</p>
+          <p>{IMAGERY_CREDIT}. Earth: NASA Blue Marble Next Generation via NASA GIBS, relief from GEBCO 2008 via NASA Visible Earth, Black Marble night lights via the three.js examples.</p>
           <p>
             {MODEL_CREDIT} (
             <a className="underline" href="https://sketchfab.com/3d-models/spacex-starship-block-3-6f6c6f88a3eb4b4d822fdca66733fbb2" target="_blank" rel="noreferrer">

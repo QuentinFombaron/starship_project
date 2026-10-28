@@ -10,13 +10,16 @@ import { R_EARTH, sunDirectionEcef } from '../sim/coords'
 import { clamp, smoothstep } from '../sim/interpolate'
 import { useReplay, ReplayContext, type Replay } from '../sim/replay'
 import { CameraRig } from './cameras/CameraRig'
+import { InspectController } from './inspect/InspectController'
 import { Earth } from './Earth/Earth'
+import { Clouds } from './Earth/Clouds'
 import { Sky } from './Earth/Sky'
 import { Effects } from './effects/Effects'
 import { Trajectories } from './effects/Trajectories'
 import { StarlinkDeploy } from './effects/Starlink'
 import { live } from './live'
-import { PadFrame, StarbaseSite } from './Starbase/Starbase'
+import { OLP2, PadFrame, StarbaseSite } from './Starbase/Starbase'
+import { SurfaceCap } from './Starbase/Surface'
 import { BoosterActor, ShipActor } from './vehicles/Actors'
 
 function SunAndLights({ sunDir }: { sunDir: React.RefObject<THREE.Vector3> }) {
@@ -106,6 +109,14 @@ function PostFX() {
   )
 }
 
+/** Open ocean around the ship's splashdown point, far from Starbase. */
+function SplashdownSea() {
+  const replay = useReplay()
+  const tel = replay.data.telemetry.ship
+  const origin = useMemo(() => ({ lat: tel.lat.at(-1)!, lon: tel.lon.at(-1)! }), [tel])
+  return <SurfaceCap origin={origin} radius={40_000} />
+}
+
 export function ReplayScene({ replay, children }: { replay: Replay; children?: React.ReactNode }) {
   const quality = useSettings((s) => s.quality)
   const q = QUALITY[quality]
@@ -128,9 +139,12 @@ export function ReplayScene({ replay, children }: { replay: Replay; children?: R
           <SunAndLights sunDir={sunDir} />
           <Sky sunDir={sunDir} />
           <Earth sunDir={sunDir} />
+          <SurfaceCap origin={OLP2} withTerrain />
+          <SplashdownSea />
           <PadFrame>
             <StarbaseSite />
           </PadFrame>
+          <Clouds />
           <BoosterActor />
           <ShipActor />
           <StarlinkDeploy />
@@ -139,6 +153,7 @@ export function ReplayScene({ replay, children }: { replay: Replay; children?: R
           {children}
         </Suspense>
         <CameraRig />
+        <InspectController />
         <PostFX />
       </ReplayContext.Provider>
     </Canvas>

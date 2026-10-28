@@ -133,7 +133,7 @@
   },
   {
     "id": "booster-landing-5",
-    "t": 408,
+    "t": 406,
     "title": "Booster landing burn steps down to 5, then 3 engines",
     "vehicle": "booster",
     "kind": "milestone",
@@ -141,15 +141,16 @@
   },
   {
     "id": "booster-splashdown",
-    "t": 421,
+    "t": 416,
     "title": "Booster landing burn shutdown and splashdown",
     "vehicle": "booster",
     "kind": "landing",
-    "description": "Super Heavy B21 makes a soft, controlled splashdown in the Gulf a few miles off the Texas coast."
+    "description": "Super Heavy B21 makes a soft, controlled splashdown in the Gulf a few miles off the Texas coast.",
+    "estimated": false
   },
   {
     "id": "booster-fts",
-    "t": 428,
+    "t": 423,
     "title": "Booster flight termination demo",
     "vehicle": "booster",
     "kind": "milestone",
@@ -188,7 +189,7 @@
   },
   {
     "id": "orbit-decision",
-    "t": 1313,
+    "t": 1315,
     "title": "GO for orbit",
     "vehicle": "ground",
     "kind": "decision",
@@ -197,39 +198,48 @@
   },
   {
     "id": "oib-start",
-    "t": 1517,
+    "t": 1515,
     "title": "Orbital insertion burn start",
     "vehicle": "ship",
     "kind": "burn-start",
-    "estimated": true,
+    "estimated": false,
     "description": "A single sea-level Raptor relights, fed for the first time from the header tanks."
   },
   {
     "id": "oib-end",
-    "t": 1536,
+    "t": 1534,
     "title": "Orbital insertion burn shutdown",
     "vehicle": "ship",
     "kind": "burn-end",
     "description": "Starship is in orbit for the first time: about 262 × 275 km at 30.5°.",
-    "estimated": true
+    "estimated": false
+  },
+  {
+    "id": "pez-door-open",
+    "t": 2058,
+    "title": "PEZ door opens",
+    "vehicle": "ship",
+    "kind": "payload",
+    "description": "The payload bay camera shows the Starlink dispenser door opening, starting the deploy sequence.",
+    "estimated": false
   },
   {
     "id": "payload-deploy-start",
-    "t": 2100,
+    "t": 2107,
     "title": "Starlink deployment begins",
     "vehicle": "ship",
     "kind": "payload",
-    "description": "The PEZ dispenser door opens and Starlink V3 satellites slide out one by one. Three carry cameras to image Ship 41's heat shield.",
-    "estimated": true
+    "description": "The first Starlink V3 satellite slides out of the PEZ dispenser slot. Three carry cameras to image Ship 41's heat shield.",
+    "estimated": false
   },
   {
     "id": "payload-deploy-end",
-    "t": 3960,
+    "t": 3885,
     "title": "Starlink deployment complete",
     "vehicle": "ship",
     "kind": "payload",
     "description": "All 26 Starlink V3 satellites released. SpaceX contacts them through laser links, ground stations and user terminals.",
-    "estimated": true
+    "estimated": false
   },
   {
     "id": "early-deorbit",
@@ -252,19 +262,20 @@
   },
   {
     "id": "deorbit-start",
-    "t": 7920,
+    "t": 7936,
     "title": "Deorbit burn start",
     "vehicle": "ship",
     "kind": "burn-start",
-    "description": "First-ever Starship deorbit burn, on one sea-level Raptor, targeting the northern Pacific contingency zone."
+    "description": "First-ever Starship deorbit burn, on one sea-level Raptor, targeting the northern Pacific contingency zone.",
+    "estimated": false
   },
   {
     "id": "deorbit-end",
-    "t": 7931,
+    "t": 7948,
     "title": "Deorbit burn shutdown",
     "vehicle": "ship",
     "kind": "burn-end",
-    "estimated": true
+    "estimated": false
   },
   {
     "id": "ship-entry",

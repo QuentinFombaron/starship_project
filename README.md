@@ -11,6 +11,10 @@ npm test             # simulation tests
 npm run validate     # check all content against the schemas
 npm run trajectory -- flight-14   # rebuild a flight's telemetry.json from its keyframes
 npm run build
+
+# optional: re-download and bake the ground/Earth textures (Python 3 + Pillow + NumPy)
+python3 -m venv .venv && .venv/bin/pip install pillow numpy
+.venv/bin/python -I scripts/bake-imagery.py            # or: ground | dem | earth
 ```
 
 ## Stack
@@ -34,6 +38,37 @@ npm run build
     entry time.
   - **Descent:** drag and lift tuned to the landing-flip time.
 
+## The 3D world
+
+- **Starbase ground.** Three nested layers of USDA NAIP aerial imagery (about 4.4 m, 2.1 m and 0.5 m per pixel)
+  are blended in one shader over lidar relief, with the mesh densest around the pads. NAIP's latest flight (June 2022)
+  predates Pad B, so the pad is modelled on a concrete apron. `scripts/bake-imagery.py` writes everything under
+  `public/textures/starbase/`.
+- **Water.** A sea-level cap reaching 80 km out from the pad (and another at the ship's splashdown) draws water wherever the
+  DEM water mask or the global ocean mask says so. It has a sum of wind waves (anti-aliased with distance), Fresnel sky
+  reflection, sun glitter, shallow-water colour, and surf that rolls in along a baked distance-to-shore field. Beyond
+  the ground patch, the same cap draws Blue Marble land.
+- **Sky and clouds.** The sky uses single-scattering Rayleigh + Mie, so the sun reddens at sunrise and the sky
+  darkens with altitude. Three cumulus layers follow the camera; their noise tiles every 40 km, which keeps it precise
+  at Earth-centred coordinates.
+- **Pad B (Orbital Launch Pad 2)** in `src/scene/Starbase/PadB.tsx`:
+  - the 144.5 m tower and its roof
+  - the shorter chopsticks and the ship quick-disconnect arm, which swings away before liftoff
+  - the clad pyramid mount with 20 clamps and split booster QDs
+  - the two-exit flame trench with its water-cooled diverter
+  - the deluge water farm and the propellant farm
+
+  Sources: NASASpaceflight pad reports and the FAA filings; the photos are in a local, git-ignored `reference/`.
+- **Hover to inspect.** Point at the booster, the ship, their engine sections or the pad hardware to get a live data
+  card; click to pin it. Vehicles turn see-through to show their LOX/methane tanks filled to the current level, along
+  with the ship's header tanks and Starlink stack. The engine grid lists every Raptor with its status. The PEZ door
+  opens for the Starlink deploy.
+- **Free roam (camera 0).**
+  - WASD/QE flies, with eased velocity; Shift makes it 5× faster.
+  - Double-click flies to a point, or locks onto the booster or ship.
+  - T cycles following the booster, the ship, or nothing.
+  - Right-drag pans; drags and zoom have inertia.
+
 ## Content database (`content/`)
 
 One folder per flight in `content/flights/flight-NN/`:
@@ -48,7 +83,7 @@ One folder per flight in `content/flights/flight-NN/`:
 | `commentary.json` | Host quotes, explainers and callouts keyed to T+ |
 | `posts.json` | Curated X posts keyed to T+ |
 | `media.json` | Photos with credit and licence |
-| `webcast.json` | YouTube id and the video time of T-0 |
+| `webcast.json` | YouTube id and the video time of T-0 (read off the HUD clock in the video) |
 
 To add a past or future flight, create its folder with `mission.json`. A summary page appears
 automatically. For a 3D replay, also add `timeline.json`, `engines.json` and `keyframes.json`, run
@@ -67,6 +102,9 @@ and the heat shield facing +Z.
 
 - **3D models:** “SpaceX Starship Block 3” by [Clarence365](https://sketchfab.com/clarence365) ([source](https://sketchfab.com/3d-models/spacex-starship-block-3-6f6c6f88a3eb4b4d822fdca66733fbb2)), CC BY 4.0. It was split into `public/models/starship.glb` and `super-heavy.glb`, the ship rotated so its heat shield faces +Z, and both compressed with meshopt and WebP.
 
-- **Ground imagery:** Sentinel-2 cloudless 2016 by EOX IT Services GmbH (CC BY 4.0).
-- **Earth textures:** NASA Blue Marble and Black Marble, via the three.js examples.
+- **Ground imagery:** USDA NAIP 2022 via the USGS National Map (public domain). Gaps are filled with Sentinel-2 cloudless
+  2016 by EOX IT Services GmbH (CC BY 4.0).
+- **Terrain:** AWS Terrain Tiles (Mapzen terrarium: USGS 3DEP, SRTM, GMTED, ETOPO1).
+- **Earth textures:** NASA Blue Marble Next Generation via NASA GIBS, relief from GEBCO 2008 via NASA Visible Earth,
+  and Black Marble night lights via the three.js examples.
 - **Mission photos:** © SpaceX and the credited outlets, linked for non-commercial fan use.

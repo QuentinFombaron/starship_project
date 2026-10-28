@@ -54,6 +54,8 @@ export const useClock = create<ClockState>((set, get) => ({
   },
 }))
 
+if (import.meta.env.DEV && typeof window !== 'undefined') Object.assign(window, { __clock: useClock })
+
 /** Drives the clock from requestAnimationFrame. Mount once per replay. */
 export function useClockDriver() {
   useEffect(() => {

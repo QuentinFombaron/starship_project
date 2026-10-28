@@ -170,7 +170,7 @@
       {
         "name": "Landing burn (13)",
         "start": 396,
-        "end": 408,
+        "end": 406,
         "engines": [
           0,
           1,
@@ -196,15 +196,15 @@
             1
           ],
           [
-            408,
+            406,
             0.9
           ]
         ]
       },
       {
         "name": "Landing burn (5)",
-        "start": 408,
-        "end": 414,
+        "start": 406,
+        "end": 411,
         "engines": [
           0,
           1,
@@ -214,19 +214,19 @@
         ],
         "throttle": [
           [
-            408,
+            406,
             0.8
           ],
           [
-            414,
+            411,
             0.7
           ]
         ]
       },
       {
         "name": "Landing burn (3)",
-        "start": 414,
-        "end": 421,
+        "start": 411,
+        "end": 416,
         "engines": [
           0,
           1,
@@ -234,11 +234,11 @@
         ],
         "throttle": [
           [
-            414,
+            411,
             0.7
           ],
           [
-            421,
+            416,
             0.4
           ]
         ]
@@ -318,36 +318,36 @@
       },
       {
         "name": "Orbital insertion burn",
-        "start": 1517,
-        "end": 1536,
+        "start": 1515,
+        "end": 1534,
         "engines": [
           0
         ],
         "throttle": [
           [
-            1517,
+            1515,
             0.8
           ],
           [
-            1536,
+            1534,
             0.8
           ]
         ]
       },
       {
         "name": "Deorbit burn",
-        "start": 7920,
-        "end": 7931,
+        "start": 7936,
+        "end": 7948,
         "engines": [
           0
         ],
         "throttle": [
           [
-            7920,
+            7936,
             0.8
           ],
           [
-            7931,
+            7948,
             0.8
           ]
         ]

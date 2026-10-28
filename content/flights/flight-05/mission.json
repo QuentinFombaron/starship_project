@@ -8,8 +8,8 @@
     "name": "Starbase, Texas",
     "pad": "OLP-1",
     "position": {
-      "lat": 25.9967,
-      "lon": -97.1572
+      "lat": 25.9962,
+      "lon": -97.1544
     }
   },
   "vehicles": {
@@ -49,8 +49,8 @@
   "boosterFate": "Caught by the OLP-1 tower chopsticks at T+6:54. Later retired.",
   "shipFate": "Controlled splashdown in the Indian Ocean at T+1:05:40, then exploded after hitting the water.",
   "boosterLanding": {
-    "lat": 25.9967,
-    "lon": -97.1572
+    "lat": 25.9962,
+    "lon": -97.1544
   },
   "durationSec": 3940,
   "stats": [

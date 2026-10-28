@@ -34,7 +34,8 @@ function loadApi() {
   return apiPromise
 }
 
-const OFFSET_KEY = (id: string) => `webcast-t0-${id}`
+/** Stores the viewer's nudge relative to the content's T-0 offset, so a recalibrated offset still applies. */
+const NUDGE_KEY = (id: string) => `webcast-nudge-${id}`
 const YT_RATES = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
 
 /**
@@ -50,14 +51,14 @@ export function VideoPiP() {
   const player = useRef<YTPlayer | null>(null)
   const [ready, setReady] = useState(false)
   const [big, setBig] = useState(false)
-  const [offset, setOffset] = useState(() => {
+  const [nudgeBy, setNudgeBy] = useState(() => {
     try {
-      const v = localStorage.getItem(OFFSET_KEY(wc?.youtubeId ?? ''))
-      return v ? Number(v) : (wc?.t0Offset ?? 0)
+      return Number(localStorage.getItem(NUDGE_KEY(wc?.youtubeId ?? '')) ?? 0) || 0
     } catch {
-      return wc?.t0Offset ?? 0
+      return 0
     }
   })
+  const offset = (wc?.t0Offset ?? 0) + nudgeBy
   const offsetRef = useRef(offset)
   offsetRef.current = offset
 
@@ -123,10 +124,10 @@ export function VideoPiP() {
 
   if (!enabled || !wc) return null
   const nudge = (d: number) => {
-    const o = offset + d
-    setOffset(o)
+    const n = d === 0 ? 0 : nudgeBy + d
+    setNudgeBy(n)
     try {
-      localStorage.setItem(OFFSET_KEY(wc.youtubeId), String(o))
+      localStorage.setItem(NUDGE_KEY(wc.youtubeId), String(n))
     } catch {
       /* storage unavailable */
     }
@@ -149,6 +150,11 @@ export function VideoPiP() {
         <span>
           T-0 at video {formatT(offset, false).replace(/^-/, '−')}
           {!wc.calibrated && ' (uncalibrated)'}
+          {nudgeBy !== 0 && (
+            <button className="ml-1 underline decoration-dotted" onClick={() => nudge(0)} title="Back to the calibrated offset">
+              reset
+            </button>
+          )}
         </span>
         <span className="ml-auto flex gap-1" title="If the video is ahead of the 3D replay, shift it earlier; if behind, later">
           {[-10, -1, 1, 10].map((d) => (

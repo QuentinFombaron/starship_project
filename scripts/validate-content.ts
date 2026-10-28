@@ -44,7 +44,7 @@ const FILES: Record<string, ZodType<unknown>> = {
 }
 
 const numbers = new Set<number>()
-for (const dir of fs.readdirSync(path.join(root, 'flights')).sort()) {
+for (const dir of fs.readdirSync(path.join(root, 'flights')).filter((d) => !d.startsWith('.')).sort()) {
   const base = path.join(root, 'flights', dir)
   const mission = check(path.join(base, 'mission.json'), MissionSchema)
   if (!mission) {
@@ -79,7 +79,7 @@ for (const dir of fs.readdirSync(path.join(root, 'flights')).sort()) {
     }
   }
 }
-for (const f of fs.readdirSync(path.join(root, 'vehicles'))) check(path.join(root, 'vehicles', f), VehicleSchema)
+for (const f of fs.readdirSync(path.join(root, 'vehicles')).filter((f) => f.endsWith('.json'))) check(path.join(root, 'vehicles', f), VehicleSchema)
 check(path.join(root, 'glossary.json'), GlossarySchema)
 
 if (errors) {

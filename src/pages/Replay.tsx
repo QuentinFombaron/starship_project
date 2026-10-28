@@ -7,6 +7,7 @@ import { Hud } from '../hud/Hud'
 import { useSettings } from '../lib/settings'
 import { Commentary } from '../panels/Commentary'
 import { EventList } from '../panels/EventList'
+import { InspectPanel } from '../panels/InspectPanel'
 import { MediaPanel } from '../panels/MediaPanel'
 import { Posts } from '../panels/Posts'
 import { SettingsDrawer } from '../panels/Settings'
@@ -89,8 +90,13 @@ const SHORTCUTS = [
   ['[ / ]', 'Slower / faster'],
   ['R', 'Reverse'],
   ['1 … 0', 'Cameras (director, chase ship, chase booster, tower, long lens, ship cam, booster cam, orbital, globe, free)'],
+  ['Hover / click', 'Live data on the vehicles and pad hardware (click to pin)'],
   ['Drag / wheel', 'Orbit / zoom the camera'],
-  ['W A S D Q E', 'Move (free roam), Shift-drag to pan'],
+  ['W A S D Q E', 'Fly (free roam camera, 0): Shift = 5× faster'],
+  ['Double-click', 'Free roam: fly to a point, or ride along with the booster/ship'],
+  ['T', 'Free roam: follow booster → ship → off'],
+  ['Right-drag', 'Free roam: pan (or Shift-drag)'],
+  ['Esc', 'Close a pinned info card'],
   ['M / G', 'Map / data panel'],
   ['C / V / H', 'Commentary / webcast / HUD'],
   ['F', 'Fullscreen'],
@@ -131,6 +137,7 @@ function ReplayUI({ replay }: { replay: ReplayModel }) {
       <EventToasts />
       <Posts />
       <SidePanel />
+      <InspectPanel />
       <VideoPiP />
       <SettingsDrawer />
       <EngineAudio />

@@ -85,7 +85,7 @@ describe('reconstructed telemetry', () => {
   it('starts on the pad', () => {
     const s = ship.sample(0)
     expect(s.alt).toBeLessThan(1)
-    expect(haversine(s.lat, s.lon, 25.9959, -97.154)).toBeLessThan(50)
+    expect(haversine(s.lat, s.lon, 25.9968, -97.15818)).toBeLessThan(50)
   })
   it('matches ship ascent anchors', () => {
     for (const a of keyframes.ship.filter((x) => x.t < 400)) {

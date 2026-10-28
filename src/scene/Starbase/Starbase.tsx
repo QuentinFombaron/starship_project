@@ -4,9 +4,11 @@ import { enuBasis, geoToEcef, sub, dot, type Vec3 } from '../../sim/coords'
 import { MOUNT_HEIGHT } from '../../sim/replay'
 import { quatFromEnu } from '../frame'
 import { concreteMaterial, darkSteelMaterial, sootMaterial, steelMaterial, towerMaterial } from '../materials'
-import { BOUNDS, imageryUv, loadStarbaseImagery } from './imagery'
+import { GRADE, PadB } from './PadB'
+import { BOUNDS, loadStarbaseTerrain, mercUv, type StarbaseTerrain } from './imagery'
+import { smoothstep } from '../../sim/interpolate'
 
-export const OLP2 = { lat: 25.9959, lon: -97.154 }
+export const OLP2 = { lat: 25.9968, lon: -97.15818 }
 
 /** Converts a lat/lon to local ENU coordinates (three.js: x east, y up, z south) around the pad. */
 export function localFromGeo(lat: number, lon: number, alt = 0, origin = OLP2): [number, number, number] {
@@ -17,68 +19,137 @@ export function localFromGeo(lat: number, lon: number, alt = 0, origin = OLP2): 
   return [dot(d, e), dot(d, u), -dot(d, n)]
 }
 
-/** Spherical-cap ground patch textured with satellite imagery; edges fade out over the global Earth. */
+export const PAD1 = { lat: 25.9962, lon: -97.1544 }
+export const FACTORY = { lat: 25.9885, lon: -97.1866 }
+/** Ground the 3D site sits on: lidar relief is flattened to grade inside these circles. */
+const FLAT_ZONES = [
+  { ...OLP2, r: 190 },
+  { ...PAD1, r: 170 },
+  { ...FACTORY, r: 520 },
+]
+/** Land never dips below this, so the sea-level water surface (WATER_LEVEL) only shows over water. */
+export const LAND_MIN = 0.4
+export const WATER_LEVEL = 0.25
+
+/** 1D grid from a to b, ~minStep apart around c and growing linearly away from it up to maxStep. */
+function gradedAxis(a: number, b: number, c: number, minStep: number, growth: number, maxStep: number) {
+  const side = (from: number, to: number) => {
+    const out: number[] = []
+    const dir = Math.sign(to - from)
+    let x = from
+    while ((to - x) * dir > 0) {
+      out.push(x)
+      x += dir * Math.min(maxStep, minStep + growth * Math.abs(x - c))
+    }
+    out.push(to)
+    return out
+  }
+  return [...side(c, a).reverse(), ...side(c, b).slice(1)]
+}
+
+/**
+ * Spherical-cap ground patch with lidar relief, textured by three nested aerial-imagery layers blended in
+ * the shader. Water areas sink below the water surface (see Surface.tsx); the edges fade into the
+ * surface cap.
+ */
 function GroundPatch() {
-  const [tex, setTex] = useState<{ map: THREE.Texture; roughness: THREE.Texture } | null>(null)
+  const [terrain, setTerrain] = useState<StarbaseTerrain | null>(null)
   useEffect(() => {
     let alive = true
-    loadStarbaseImagery().then((t) => alive && setTex(t))
+    loadStarbaseTerrain().then((t) => alive && setTerrain(t))
     return () => {
       alive = false
     }
   }, [])
   const geom = useMemo(() => {
-    const N = 160
-    const pos: number[] = []
-    const uv: number[] = []
-    const fade: number[] = []
+    if (!terrain) return null
+    const mPerLat = 110_790
+    const mPerLon = 111_320 * Math.cos((OLP2.lat * Math.PI) / 180)
+    // metres east/north of the pad → graded axes, densest (4 m) around the pads
+    const xs = gradedAxis((BOUNDS.west - OLP2.lon) * mPerLon, (BOUNDS.east - OLP2.lon) * mPerLon, -150, 4, 0.035, 160)
+    const ys = gradedAxis((BOUNDS.south - OLP2.lat) * mPerLat, (BOUNDS.north - OLP2.lat) * mPerLat, 0, 4, 0.035, 160)
+    const nx = xs.length
+    const ny = ys.length
+    const pos = new Float32Array(nx * ny * 3)
+    const uvO = new Float32Array(nx * ny * 2)
+    const uvM = new Float32Array(nx * ny * 2)
+    const uvI = new Float32Array(nx * ny * 2)
+    const fade = new Float32Array(nx * ny)
     const idx: number[] = []
-    for (let j = 0; j <= N; j++) {
-      for (let i = 0; i <= N; i++) {
-        const lon = BOUNDS.west + ((BOUNDS.east - BOUNDS.west) * i) / N
-        const lat = BOUNDS.south + ((BOUNDS.north - BOUNDS.south) * j) / N
-        const p = localFromGeo(lat, lon, 0.15)
-        pos.push(p[0], p[1], p[2])
-        const [u, v] = imageryUv(lat, lon)
-        uv.push(u, v)
-        const edge = Math.min(i, N - i, j, N - j) / N
-        fade.push(Math.min(1, edge / 0.12))
+    const xMin = xs[0]
+    const xMax = xs[nx - 1]
+    const yMin = ys[0]
+    const yMax = ys[ny - 1]
+    const edge = Math.min(xMax - xMin, yMax - yMin) * 0.1
+    for (let j = 0; j < ny; j++) {
+      for (let i = 0; i < nx; i++) {
+        const k = j * nx + i
+        const lat = OLP2.lat + ys[j] / mPerLat
+        const lon = OLP2.lon + xs[i] / mPerLon
+        let h = Math.max(LAND_MIN, terrain.height(lat, lon))
+        for (const z of FLAT_ZONES) {
+          const d = Math.hypot((lat - z.lat) * mPerLat, (lon - z.lon) * mPerLon)
+          h += (GRADE - h) * (1 - smoothstep(z.r * 0.75, z.r, d))
+        }
+        const wet = terrain.water(lat, lon)
+        h += (-2.5 - h) * smoothstep(0.35, 0.75, wet)
+        const p = localFromGeo(lat, lon, h)
+        pos.set(p, k * 3)
+        uvO.set(mercUv(terrain.outer.bounds, lat, lon), k * 2)
+        uvM.set(mercUv(terrain.mid.bounds, lat, lon), k * 2)
+        uvI.set(mercUv(terrain.inner.bounds, lat, lon), k * 2)
+        const e = Math.min(xs[i] - xMin, xMax - xs[i], ys[j] - yMin, yMax - ys[j])
+        fade[k] = Math.min(1, e / edge)
       }
     }
-    for (let j = 0; j < N; j++)
-      for (let i = 0; i < N; i++) {
-        const a = j * (N + 1) + i
+    for (let j = 0; j < ny - 1; j++)
+      for (let i = 0; i < nx - 1; i++) {
+        const a = j * nx + i
         const b = a + 1
-        const c = a + N + 1
+        const c = a + nx
         const d = c + 1
         idx.push(a, b, c, b, d, c)
       }
     const g = new THREE.BufferGeometry()
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
-    g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2))
-    g.setAttribute('fade', new THREE.Float32BufferAttribute(fade, 1))
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+    g.setAttribute('uvO', new THREE.BufferAttribute(uvO, 2))
+    g.setAttribute('uvM', new THREE.BufferAttribute(uvM, 2))
+    g.setAttribute('uvI', new THREE.BufferAttribute(uvI, 2))
+    g.setAttribute('fade', new THREE.BufferAttribute(fade, 1))
     g.setIndex(idx)
     g.computeVertexNormals()
+    g.computeBoundingSphere()
     return g
-  }, [])
+  }, [terrain])
   const mat = useMemo(() => {
-    const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 1, metalness: 0, transparent: true })
+    if (!terrain) return null
+    const uniforms = { mapOuter: { value: terrain.outer.map }, mapMid: { value: terrain.mid.map }, mapInner: { value: terrain.inner.map } }
+    const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.96, metalness: 0, transparent: true })
     m.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, uniforms)
       shader.vertexShader = shader.vertexShader
-        .replace('#include <common>', '#include <common>\nattribute float fade;\nvarying float vFade;')
-        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFade = fade;')
+        .replace('#include <common>', '#include <common>\nattribute vec2 uvO; attribute vec2 uvM; attribute vec2 uvI; attribute float fade;\nvarying vec2 vUvO; varying vec2 vUvM; varying vec2 vUvI; varying float vFade;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvUvO = uvO; vUvM = uvM; vUvI = uvI; vFade = fade;')
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying float vFade;')
+        .replace(
+          '#include <common>',
+          `#include <common>
+uniform sampler2D mapOuter; uniform sampler2D mapMid; uniform sampler2D mapInner;
+varying vec2 vUvO; varying vec2 vUvM; varying vec2 vUvI; varying float vFade;
+float layerW(vec2 uv, float soft) { vec2 e = min(uv, 1.0 - uv); return smoothstep(0.0, soft, min(e.x, e.y)); }`,
+        )
+        .replace(
+          '#include <map_fragment>',
+          `vec4 texelColor = texture2D(mapOuter, vUvO);
+texelColor = mix(texelColor, texture2D(mapMid, vUvM), layerW(vUvM, 0.04));
+texelColor = mix(texelColor, texture2D(mapInner, vUvI), layerW(vUvI, 0.06));
+diffuseColor *= texelColor;`,
+        )
         .replace('#include <dithering_fragment>', '#include <dithering_fragment>\ngl_FragColor.a *= vFade;')
     }
     return m
-  }, [])
-  useEffect(() => {
-    if (!tex) return
-    mat.map = tex.map
-    mat.roughnessMap = tex.roughness
-    mat.needsUpdate = true
-  }, [tex, mat])
+  }, [terrain])
+  if (!geom || !mat) return null
   return <mesh geometry={geom} material={mat} receiveShadow renderOrder={0} />
 }
 
@@ -166,29 +237,6 @@ function LaunchMount({ height = MOUNT_HEIGHT, trenchDir = -1 }: { height?: numbe
   )
 }
 
-function TankFarm() {
-  const tanks = useMemo(() => {
-    const t: { x: number; z: number; r: number; h: number }[] = []
-    for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) t.push({ x: i * 11, z: j * 11, r: 4.2, h: 24 + ((i + j) % 2) * 6 })
-    return t
-  }, [])
-  return (
-    <group>
-      {tanks.map((k, i) => (
-        <mesh key={i} position={[k.x, k.h / 2, k.z]} material={steelMaterial()} castShadow receiveShadow>
-          <cylinderGeometry args={[k.r, k.r, k.h, 24]} />
-        </mesh>
-      ))}
-      {/* horizontal tanks */}
-      {[0, 1, 2].map((i) => (
-        <mesh key={`h${i}`} position={[18, 3.2, 32 + i * 8]} rotation={[0, 0, Math.PI / 2]} material={steelMaterial()} castShadow>
-          <cylinderGeometry args={[3, 3, 40, 20]} />
-        </mesh>
-      ))}
-    </group>
-  )
-}
-
 function Building({ size, color = '#d9d9d6' }: { size: [number, number, number]; color?: string }) {
   const mat = useMemo(() => new THREE.MeshStandardMaterial({ color, roughness: 0.8, metalness: 0.2 }), [color])
   return (
@@ -199,36 +247,25 @@ function Building({ size, color = '#d9d9d6' }: { size: [number, number, number];
 }
 
 export function StarbaseSite() {
-  const pad1 = localFromGeo(25.9967, -97.1572)
+  const pad1 = localFromGeo(PAD1.lat, PAD1.lon)
   return (
     <group>
       <GroundPatch />
-      {/* Pad 2 */}
-      <mesh position={[0, 0.2, 0]} material={concreteMaterial()} receiveShadow>
-        <boxGeometry args={[150, 0.4, 130]} />
-      </mesh>
-      <LaunchMount />
-      <group position={[-24, 0, 0]}>
-        <LatticeTower />
-      </group>
-      <group position={[-60, 0, 70]}>
-        <TankFarm />
-      </group>
-      {/* Pad 1 */}
+      <PadB />
+      {/* Pad 1 (Pad A): older table-style mount, tower to the north-west with its chopsticks facing the mount */}
       <group position={pad1}>
-        <mesh position={[0, 0.2, 0]} material={concreteMaterial()} receiveShadow>
-          <boxGeometry args={[130, 0.4, 110]} />
-        </mesh>
-        <LaunchMount height={20} trenchDir={1} />
-        <group position={[-22, 0, 4]}>
-          <LatticeTower height={146} chopstickHeight={108} armAngle={0.55} />
-        </group>
-        <group position={[-70, 0, 55]}>
-          <TankFarm />
+        <group userData={{ inspect: 'pad-a' }}>
+          <mesh position={[0, GRADE + 0.12, 0]} material={concreteMaterial()} receiveShadow>
+            <boxGeometry args={[130, 0.3, 110]} />
+          </mesh>
+          <LaunchMount height={20} trenchDir={1} />
+          <group position={[-17, GRADE, -22]} rotation={[0, -0.913, 0]}>
+            <LatticeTower height={146} chopstickHeight={108} armAngle={0.55} />
+          </group>
         </group>
       </group>
       {/* Starbase production site (~2.5 km west): Starfactory, Mega Bays, high bays */}
-      <group position={localFromGeo(25.9885, -97.1866)}>
+      <group position={localFromGeo(FACTORY.lat, FACTORY.lon, GRADE)}>
         <group position={[0, 0, 0]}>
           <Building size={[260, 32, 90]} color="#e8e8e6" />
         </group>

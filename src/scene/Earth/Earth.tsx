@@ -27,6 +27,7 @@ const EARTH_FRAG = /* glsl */ `
 uniform sampler2D dayMap;
 uniform sampler2D nightMap;
 uniform sampler2D brcMap; // r: bump, g: roughness, b: clouds
+uniform sampler2D normalMap; // tangent space: x east, y north
 uniform vec3 sunDir;
 uniform float cloudAmount;
 uniform float time;
@@ -35,8 +36,15 @@ varying vec3 vNormalW;
 varying vec3 vPosW;
 void main() {
   #include <logdepthbuf_fragment>
-  vec3 n = normalize(vNormalW);
+  vec3 n0 = normalize(vNormalW);
   vec3 v = normalize(cameraPosition - vPosW);
+  // relief: perturb the sphere normal with the GEBCO-derived normal map in the local east/north frame
+  vec3 east = normalize(vec3(n0.z, 0.0, -n0.x) + vec3(1e-6, 0.0, 0.0));
+  vec3 north = cross(n0, east);
+  vec3 nm = texture2D(normalMap, vUv).xyz * 2.0 - 1.0;
+  // soften towards the limb, where exaggerated relief would streak
+  nm.xy *= 0.35 + 0.65 * smoothstep(0.05, 0.5, dot(n0, v));
+  vec3 n = normalize(east * nm.x + north * nm.y + n0 * nm.z);
   float ndl = dot(n, sunDir);
   vec3 day = texture2D(dayMap, vUv).rgb;
   vec3 night = texture2D(nightMap, vUv).rgb;
@@ -92,20 +100,36 @@ void main() {
 
 export const ATMOSPHERE_THICKNESS = 80_000
 
+/**
+ * Earth textures. High/ultra quality uses the 8K Blue Marble Next Generation and a GEBCO relief normal map
+ * baked by scripts/bake-imagery.py; lower qualities keep the 4K/2K set to save GPU memory.
+ */
+export function useEarthTextures() {
+  const quality = useSettings((s) => s.quality)
+  const big = quality === 'high' || quality === 'ultra'
+  const [day, night, brc, normal] = useTexture([
+    big ? '/textures/earth/earth_day_8192.jpg' : '/textures/earth/earth_day_4096.jpg',
+    '/textures/earth/earth_night_4096.jpg',
+    '/textures/earth/earth_bump_roughness_clouds_4096.jpg',
+    big ? '/textures/earth/earth_normal_8192.jpg' : '/textures/earth/earth_normal_2048.jpg',
+  ])
+  useMemo(() => {
+    day.colorSpace = THREE.SRGBColorSpace
+    night.colorSpace = THREE.SRGBColorSpace
+    for (const t of [day, night, brc, normal]) {
+      t.anisotropy = 8
+      t.needsUpdate = true
+    }
+  }, [day, night, brc, normal])
+  return { day, night, brc, normal }
+}
+
 export function Earth({ sunDir }: { sunDir: React.RefObject<THREE.Vector3> }) {
   const quality = useSettings((s) => s.quality)
   const showAtmo = useSettings((s) => s.atmosphere)
   const clouds = useSettings((s) => s.clouds)
   const seg = QUALITY[quality].segments
-  const [day, night, brc] = useTexture(['/textures/earth/earth_day_4096.jpg', '/textures/earth/earth_night_4096.jpg', '/textures/earth/earth_bump_roughness_clouds_4096.jpg'])
-  useMemo(() => {
-    day.colorSpace = THREE.SRGBColorSpace
-    night.colorSpace = THREE.SRGBColorSpace
-    for (const t of [day, night, brc]) {
-      t.anisotropy = 8
-      t.needsUpdate = true
-    }
-  }, [day, night, brc])
+  const { day, night, brc, normal } = useEarthTextures()
 
   const earthMat = useMemo(
     () =>
@@ -116,12 +140,13 @@ export function Earth({ sunDir }: { sunDir: React.RefObject<THREE.Vector3> }) {
           dayMap: { value: day },
           nightMap: { value: night },
           brcMap: { value: brc },
+          normalMap: { value: normal },
           sunDir: { value: new THREE.Vector3(1, 0, 0) },
           cloudAmount: { value: 1 },
           time: { value: 0 },
         },
       }),
-    [day, night, brc],
+    [day, night, brc, normal],
   )
   const atmoMat = useMemo(
     () =>
