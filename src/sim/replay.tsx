@@ -12,6 +12,10 @@ export const DIAMETER = 9
 /** Height of the engine exit plane above ground when sitting on the launch mount (Pad B, ~16–20 m). */
 export const MOUNT_HEIGHT = 20
 
+/** Roll from the pad orientation to the flight attitude, after the stack clears the tower. */
+const ROLL_START = 9
+const ROLL_END = 30
+
 export type Vehicle = 'booster' | 'ship'
 
 export interface Pose {
@@ -67,6 +71,17 @@ export class Replay {
     const sampler = vehicle === 'booster' ? this.booster : this.ship
     const s = sampler.sample(t)
     const b = bodyBasis(s.lat, s.lon, s.heading, s.pitch)
+    // On the mount the heat shield faces away from the tower; the stack rolls to its flight attitude once it
+    // has cleared the tower (rotation about the body axis, so the pitch-over direction is unaffected).
+    const padBelly = this.data.mission.launchSite.bellyHeadingDeg
+    if (padBelly !== undefined && t < ROLL_END) {
+      const a = (((padBelly - s.heading + 540) % 360) - 180) * (1 - smoothstep(ROLL_START, ROLL_END, t)) * (Math.PI / 180)
+      const c = Math.cos(a)
+      const sn = Math.sin(a)
+      const belly: Vec3 = [b.belly[0] * c - b.right[0] * sn, b.belly[1] * c - b.right[1] * sn, b.belly[2] * c - b.right[2] * sn]
+      b.right = [b.nose[1] * belly[2] - b.nose[2] * belly[1], b.nose[2] * belly[0] - b.nose[0] * belly[2], b.nose[0] * belly[1] - b.nose[1] * belly[0]]
+      b.belly = belly
+    }
     const L = vehicle === 'booster' ? BOOSTER_LEN : SHIP_LEN
     // telemetry point = interstage during ascent; it relaxes to each stage's centre of mass after staging
     const k = smoothstep(this.tStage, this.tStage + 40, t)

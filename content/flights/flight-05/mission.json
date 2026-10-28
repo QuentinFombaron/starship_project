@@ -88,5 +88,7 @@
       "publisher": "Wikipedia"
     }
   ],
-  "hasReplay": false
+  "hasReplay": false,
+  "heroImage": "/images/flights/flight-05.jpg",
+  "heroCredit": "Steve Jurvetson · CC BY 2.0 · https://commons.wikimedia.org/wiki/File:SpaceX_Ignition_(54063834163).jpg"
 }

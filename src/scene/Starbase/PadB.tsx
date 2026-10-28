@@ -4,23 +4,27 @@ import * as THREE from 'three'
 import { useClock } from '../../sim/clock'
 import { smoothstep } from '../../sim/interpolate'
 import { MOUNT_HEIGHT } from '../../sim/replay'
-import { concreteMaterial, darkSteelMaterial, latticeTexture, sootMaterial, steelMaterial } from '../materials'
+import { concreteMaterial, darkSteelMaterial, latticeTexture, sootMaterial, steelMaterial, steelTexture } from '../materials'
 
 /**
  * Orbital Launch Pad 2 ("Pad B"), as of 2026. Sources: NASASpaceflight pad articles (2025–2026), the FAA
- * tower filing (144.5 m) and NOAA/Vantor aerials. Numbers marked ~ are estimates from photos.
+ * tower filing (144.5 m), NOAA/Vantor aerials and NSF photos of the stacked vehicle. Numbers marked ~ are estimates.
  *
  * Local frame: origin at the launch mount centre at grade, y up. The pad group is turned so local +x points
- * at the tower (~27 m NNE of the mount) and the flame trench runs along local z (WNW–ESE).
+ * at the tower (NNE of the mount) and the flame trench runs along local z (WNW–ESE).
  */
 export const PAD_B_YAW = 1.272
+/** Yaw that turns a vehicle model's heat shield (+Z) away from the tower, as the stack stands on the mount. */
+export const STACK_YAW = PAD_B_YAW - Math.PI / 2
 export const GRADE = 0.45
 /** Top of the mount deck; the booster's engine exit plane hangs MOUNT_HEIGHT above grade inside the opening. */
 export const DECK_Y = MOUNT_HEIGHT + 2.6
-const TOWER_X = 27
+/** Tower centre from the mount: ~4 m between the tower face and the booster (NSF photos, May 2026). */
+const TOWER_X = 16
 const TOWER_W = 13.5
 const TOWER_H = 140
-const BASE_H = 18
+/** Steel cladding over the lower tower, up to about two-thirds of the booster. */
+const CLAD_H = 60
 
 const once = <T,>(make: () => T) => {
   let v: T | undefined
@@ -31,13 +35,13 @@ const towerSteel = once(() => {
   const t = latticeTexture().clone()
   t.repeat.set(2, 20)
   t.needsUpdate = true
-  return new THREE.MeshStandardMaterial({ color: '#3e4044', alphaMap: t, alphaTest: 0.5, metalness: 0.7, roughness: 0.55, side: THREE.DoubleSide })
+  return new THREE.MeshStandardMaterial({ color: '#b8bcc1', alphaMap: t, alphaTest: 0.5, metalness: 0.75, roughness: 0.42, side: THREE.DoubleSide })
 })
 const armSteel = once(() => {
   const t = latticeTexture().clone()
   t.repeat.set(9, 1)
   t.needsUpdate = true
-  return new THREE.MeshStandardMaterial({ color: '#45474b', alphaMap: t, alphaTest: 0.5, metalness: 0.75, roughness: 0.5, side: THREE.DoubleSide })
+  return new THREE.MeshStandardMaterial({ color: '#2c2e31', alphaMap: t, alphaTest: 0.5, metalness: 0.7, roughness: 0.5, side: THREE.DoubleSide })
 })
 const cladding = once(() => new THREE.MeshStandardMaterial({ color: '#a9abae', metalness: 0.85, roughness: 0.38, side: THREE.DoubleSide }))
 const deckPlate = once(() => new THREE.MeshStandardMaterial({ color: '#4c4a47', metalness: 0.75, roughness: 0.55 }))
@@ -169,35 +173,49 @@ function FlameTrench() {
   )
 }
 
-/** Integration Tower 2: 144.5 m, nine lattice modules on a clad concrete "speed-core" base, new roof. */
+/** Steel panels cladding the lower tower: duller than the mount's polished cladding, with welded panel bands. */
+const towerCladding = once(() => {
+  const t = steelTexture().clone()
+  t.repeat.set(3, 8)
+  t.needsUpdate = true
+  return new THREE.MeshStandardMaterial({ color: '#8f9399', map: t, metalness: 0.7, roughness: 0.55 })
+})
+const towerColumn = once(() => new THREE.MeshStandardMaterial({ color: '#cfd2d6', metalness: 0.8, roughness: 0.35 }))
+
+/** Integration Tower 2: 144.5 m silver lattice of nine modules, steel-clad lower section, new clad roof. */
 function Tower() {
   const W = TOWER_W
   return (
     <group position={[TOWER_X, GRADE, 0]}>
       <group userData={{ inspect: 'tower-b' }}>
-        <mesh position={[0, BASE_H / 2, 0]} material={cladding()} castShadow receiveShadow>
-          <boxGeometry args={[W + 1.5, BASE_H, W + 1.5]} />
+        <mesh position={[0, CLAD_H / 2, 0]} material={towerCladding()} castShadow receiveShadow>
+          <boxGeometry args={[W + 0.6, CLAD_H, W + 0.6]} />
         </mesh>
-        <mesh position={[0, BASE_H + (TOWER_H - BASE_H) / 2, 0]} material={towerSteel()} castShadow>
-          <boxGeometry args={[W, TOWER_H - BASE_H, W]} />
+        <mesh position={[0, CLAD_H + (TOWER_H - CLAD_H) / 2, 0]} material={towerSteel()} castShadow>
+          <boxGeometry args={[W, TOWER_H - CLAD_H, W]} />
         </mesh>
         {/* corner columns and module floors */}
         {[-1, 1].flatMap((sx) =>
           [-1, 1].map((sz) => (
-            <mesh key={`${sx}${sz}`} position={[(sx * W) / 2, TOWER_H / 2, (sz * W) / 2]} material={darkSteelMaterial()} castShadow>
-              <boxGeometry args={[1.1, TOWER_H, 1.1]} />
+            <mesh key={`${sx}${sz}`} position={[(sx * W) / 2, TOWER_H / 2, (sz * W) / 2]} material={towerColumn()} castShadow>
+              <boxGeometry args={[1.2, TOWER_H, 1.2]} />
             </mesh>
           )),
         )}
         {Array.from({ length: 9 }, (_, i) => (
-          <mesh key={i} position={[0, BASE_H + ((TOWER_H - BASE_H) * (i + 1)) / 9, 0]} material={darkSteelMaterial()}>
+          <mesh key={i} position={[0, (TOWER_H * (i + 1)) / 9, 0]} material={darkSteelMaterial()}>
             <boxGeometry args={[W + 0.4, 0.7, W + 0.4]} />
           </mesh>
         ))}
-        {/* elevator/stair core */}
+        {/* elevator/stair core and the propellant risers up the tower */}
         <mesh position={[-2, TOWER_H / 2, 3]} material={darkSteelMaterial()}>
           <boxGeometry args={[3.5, TOWER_H, 3.5]} />
         </mesh>
+        {[-1.5, 0, 1.5].map((z) => (
+          <mesh key={z} position={[-W / 2 + 1.6, TOWER_H * 0.38, z]} material={towerColumn()}>
+            <cylinderGeometry args={[0.32, 0.32, TOWER_H * 0.76, 8]} />
+          </mesh>
+        ))}
         {/* clad roof shielding the drawworks, and the lightning rod */}
         <mesh position={[0, TOWER_H + 2.5, 0]} material={cladding()} castShadow>
           <boxGeometry args={[W + 2, 5, W + 2]} />
@@ -209,8 +227,9 @@ function Tower() {
           <cylinderGeometry args={[0.12, 0.3, 6, 6]} />
         </mesh>
       </group>
-      <Chopsticks height={84} spread={0.5} />
-      <ShipQdArm height={DECK_Y + 72.3 + 3 - GRADE} />
+      {/* at launch the chopsticks wait open around the ship's nose */}
+      <Chopsticks height={DECK_Y + 72.3 + 44 - GRADE} spread={0.38} />
+      <ShipQdArm height={DECK_Y + 72.3 + 7 - GRADE} />
     </group>
   )
 }
@@ -219,28 +238,29 @@ function Tower() {
 function Chopsticks({ height, spread }: { height: number; spread: number }) {
   const L = 26
   return (
-    <group position={[-TOWER_W / 2 - 1.6, height, 0]} userData={{ inspect: 'chopsticks' }}>
+    <group position={[-TOWER_W / 2 - 1.8, height, 0]} userData={{ inspect: 'chopsticks' }}>
       {/* carriage riding the tower face */}
       <mesh material={darkSteelMaterial()} castShadow>
-        <boxGeometry args={[3.2, 9, TOWER_W + 1]} />
+        <boxGeometry args={[3.6, 11, TOWER_W + 1.5]} />
       </mesh>
       {[-1, 1].map((s) => (
-        <group key={s} position={[0, 0, (s * TOWER_W) / 2]} rotation={[0, Math.PI - s * spread, 0]}>
+        // each arm hinges at its side of the carriage and swings outwards, around the vehicle
+        <group key={s} position={[0, 0, (s * TOWER_W) / 2]} rotation={[0, Math.PI + s * spread, 0]}>
           <mesh position={[L / 2, 0, 0]} material={armSteel()} castShadow>
-            <boxGeometry args={[L, 3.4, 2.2]} />
+            <boxGeometry args={[L, 4.6, 2.6]} />
           </mesh>
-          <mesh position={[L / 2, 0, 0]} material={darkSteelMaterial()}>
-            <boxGeometry args={[L, 0.5, 0.6]} />
+          <mesh position={[L / 2, -2.1, 0]} material={darkSteelMaterial()}>
+            <boxGeometry args={[L, 0.5, 2.7]} />
           </mesh>
-          {/* catch rail, sled and tip pusher */}
-          <mesh position={[L / 2 + 2, 1.95, -s * 1.1]} material={darkSteelMaterial()}>
-            <boxGeometry args={[L - 6, 0.5, 0.7]} />
+          {/* catch rail on the inner edge, sled and tip pusher */}
+          <mesh position={[L / 2 + 2, 2.6, -s * 1.2]} material={darkSteelMaterial()}>
+            <boxGeometry args={[L - 6, 0.6, 0.8]} />
           </mesh>
-          <mesh position={[L * 0.62, 2.5, -s * 1.1]} material={steelMaterial()}>
-            <boxGeometry args={[2.4, 0.7, 1]} />
+          <mesh position={[L * 0.62, 3.2, -s * 1.2]} material={steelMaterial()}>
+            <boxGeometry args={[2.4, 0.8, 1.1]} />
           </mesh>
-          <mesh position={[L - 0.4, 0, -s * 0.9]} material={steelMaterial()}>
-            <boxGeometry args={[1.2, 1.4, 1.6]} />
+          <mesh position={[L - 0.4, 0, -s * 1.1]} material={steelMaterial()}>
+            <boxGeometry args={[1.4, 1.8, 1.8]} />
           </mesh>
         </group>
       ))}
@@ -248,27 +268,35 @@ function Chopsticks({ height, spread }: { height: number; spread: number }) {
   )
 }
 
-/** Separate, reinforced ship quick-disconnect swing arm; it swings clear in the last seconds of the count. */
+/** Separate, reinforced ship quick-disconnect arm: a big truss box mated to the ship's aft skirt; it swings clear late in the count. */
 function ShipQdArm({ height }: { height: number }) {
   const pivot = useRef<THREE.Group>(null)
   useFrame(() => {
     const t = useClock.getState().t
     if (pivot.current) pivot.current.rotation.y = -1.25 * smoothstep(-22, -12, t)
   })
-  const reach = TOWER_X - TOWER_W / 2 - 4.5
+  const reach = TOWER_X - TOWER_W / 2 - 4.6
+  const D = 8
   return (
-    <group position={[-TOWER_W / 2, height, -TOWER_W / 2 + 1.5]} userData={{ inspect: 'sqd' }}>
+    <group position={[-TOWER_W / 2, height, -TOWER_W / 2 + 0.6]} userData={{ inspect: 'sqd' }}>
       <group ref={pivot}>
-        <mesh position={[-reach / 2, 0, 0]} material={armSteel()} castShadow>
-          <boxGeometry args={[reach, 4.2, 3.2]} />
-        </mesh>
-        <mesh position={[-reach / 2, -2.2, 0]} material={darkSteelMaterial()}>
-          <boxGeometry args={[reach, 0.4, 3.4]} />
-        </mesh>
-        {/* QD plate that mates with the ship's aft skirt */}
-        <mesh position={[-reach - 0.6, -0.6, 3.4]} material={cladding()} castShadow>
-          <boxGeometry args={[2.2, 5, 3.6]} />
-        </mesh>
+        <group position={[-reach / 2 - 0.5, 0, TOWER_W / 2 - 0.6]}>
+          <mesh material={armSteel()} castShadow>
+            <boxGeometry args={[reach + 1, 13, D]} />
+          </mesh>
+          {[-6.3, 6.3].map((y) => (
+            <mesh key={y} position={[0, y, 0]} material={darkSteelMaterial()}>
+              <boxGeometry args={[reach + 1.2, 0.5, D + 0.2]} />
+            </mesh>
+          ))}
+          {/* QD plate that mates with the ship's aft skirt, and the umbilical piping */}
+          <mesh position={[-reach / 2 - 0.4, -3.5, 0]} material={cladding()} castShadow>
+            <boxGeometry args={[1.2, 4, 4]} />
+          </mesh>
+          <mesh position={[0, 2, 2.2]} rotation={[0, 0, Math.PI / 2]} material={steelMaterial()}>
+            <cylinderGeometry args={[0.45, 0.45, reach + 1, 10]} />
+          </mesh>
+        </group>
       </group>
     </group>
   )

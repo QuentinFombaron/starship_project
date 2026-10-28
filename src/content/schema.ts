@@ -26,7 +26,13 @@ export const MissionSchema = z.object({
   /** ISO 8601 UTC liftoff; for scheduled flights the NET date. */
   launchTime: z.iso.datetime(),
   outcome: Outcome,
-  launchSite: z.object({ name: z.string(), pad: z.string(), position: LatLon }),
+  launchSite: z.object({
+    name: z.string(),
+    pad: z.string(),
+    position: LatLon,
+    /** Compass heading the ship's heat shield faces while stacked on the mount (away from the tower). */
+    bellyHeadingDeg: z.number().optional(),
+  }),
   vehicles: z.object({
     booster: z.object({ id: z.string(), block: z.string() }),
     ship: z.object({ id: z.string(), block: z.string() }),
@@ -53,6 +59,8 @@ export const MissionSchema = z.object({
   stats: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
   webcast: z.object({ youtubeId: z.string(), title: z.string().optional() }).optional(),
   heroImage: z.string().optional(),
+  /** Credit and licence for heroImage, e.g. "SpaceX · all rights reserved, non-commercial fan use". */
+  heroCredit: z.string().optional(),
   sources: z.array(Source).default([]),
   /** True when replay data (timeline + engines + keyframes) is available. */
   hasReplay: z.boolean().default(false),

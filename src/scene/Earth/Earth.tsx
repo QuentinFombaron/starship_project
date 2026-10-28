@@ -4,6 +4,7 @@ import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { R_EARTH } from '../../sim/coords'
 import { useSettings, QUALITY } from '../../lib/settings'
+import { SKY_GLSL } from './Sky'
 
 const VERT = /* glsl */ `
 #include <common>
@@ -30,6 +31,7 @@ uniform sampler2D brcMap; // r: bump, g: roughness, b: clouds
 uniform sampler2D normalMap; // tangent space: x east, y north
 uniform vec3 sunDir;
 uniform float cloudAmount;
+${SKY_GLSL}
 uniform float time;
 varying vec2 vUv;
 varying vec3 vNormalW;
@@ -64,10 +66,14 @@ void main() {
   float cl = smoothstep(0.25, 0.85, brc.b) * cloudAmount;
   vec3 cloudCol = vec3(1.0) * (0.03 + 1.1 * max(ndl, 0.0)) ;
   col = mix(col, cloudCol, cl * 0.9);
-  // atmospheric scattering tint towards the limb
-  float fres = pow(clamp(1.0 - dot(n, v), 0.0, 1.0), 3.0);
-  vec3 sky = mix(vec3(0.95, 0.5, 0.25), vec3(0.32, 0.6, 1.0), smoothstep(-0.12, 0.12, ndl));
-  col += sky * fres * smoothstep(-0.2, 0.15, ndl) * 0.75;
+  // aerial perspective from the air the view ray crosses (≈ 1 looking straight down, ~25 at the limb):
+  // clear and dark-blue oceans below the camera, blue haze building towards the horizon
+  float path = 1.0 / (max(dot(n0, v), 0.0) + 0.04);
+  vec3 tr = exp(-(BETA_R + BETA_M) * path * 0.28);
+  float sunUp = dot(n0, sunDir);
+  // blue daytime haze, with only a thin warm band along the terminator
+  vec3 haze = vec3(0.3, 0.52, 0.95) * smoothstep(-0.08, 0.22, sunUp) * 0.9 + vec3(0.55, 0.3, 0.14) * exp(-pow(sunUp / 0.07, 2.0)) * 0.35;
+  col = col * tr + haze * (1.0 - tr);
   // twilight warmth at the terminator
   col *= mix(vec3(1.0), vec3(1.08, 0.92, 0.82), (1.0 - smoothstep(0.0, 0.18, ndl)) * light * 0.6);
   gl_FragColor = vec4(col, 1.0);

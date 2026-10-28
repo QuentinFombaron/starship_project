@@ -59,6 +59,10 @@ python3 -m venv .venv && .venv/bin/pip install pillow numpy
   - the deluge water farm and the propellant farm
 
   Sources: NASASpaceflight pad reports and the FAA filings; the photos are in a local, git-ignored `reference/`.
+
+  On the mount, the ship's heat shield faces away from the tower, as in NSF photos of the stacked vehicle
+  (`launchSite.bellyHeadingDeg` in `mission.json`). Between T+9 s and T+30 s the stack rolls about its axis to its flight
+  attitude.
 - **Hover to inspect.** Point at the booster, the ship, their engine sections or the pad hardware to get a live data
   card; click to pin it. Vehicles turn see-through to show their LOX/methane tanks filled to the current level, along
   with the ship's header tanks and Starlink stack. The engine grid lists every Raptor with its status. The PEZ door

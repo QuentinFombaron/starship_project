@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { useClock } from '../../sim/clock'
@@ -7,9 +7,8 @@ import { BOOSTER_LEN, SHIP_LEN, useReplay, type Vehicle } from '../../sim/replay
 import { quatFromBasis, toV3 } from '../frame'
 import { live } from '../live'
 import { EngineGlows, Plume } from '../effects/Plume'
-import { headerLevel, pezDoor, propLevels, starlinksAboard, useInspect, xrayVehicle } from '../inspect/data'
+import { headerLevel, pezDoor, propLevels, starlinksAboard, useInspect, xrayOn } from '../inspect/data'
 import { GlbOverride } from './GlbOverride'
-import { steelMaterial } from '../materials'
 import { Starship, SuperHeavy, boosterEnginePositions, shipEnginePositions } from './Vehicles'
 
 const PRIORITY = -2
@@ -62,7 +61,7 @@ export function BoosterActor() {
   const [glb, setGlb] = useState(false)
   const bottom = -BOOSTER_LEN / 2 - (glb ? 0 : 2.2)
   const hull = useRef<THREE.Group>(null)
-  const xray = useInspect((s) => xrayVehicle(s) === 'booster')
+  const xray = useInspect((s) => xrayOn(s, 'booster'))
   useGhost(hull, xray, glb)
   return (
     <group ref={group}>
@@ -88,7 +87,7 @@ export function ShipActor() {
   const [glb, setGlb] = useState(false)
   const bottom = -SHIP_LEN / 2 - (glb ? 0 : 2.6)
   const hull = useRef<THREE.Group>(null)
-  const xray = useInspect((s) => xrayVehicle(s) === 'ship')
+  const xray = useInspect((s) => xrayOn(s, 'ship'))
   useGhost(hull, xray, glb)
   return (
     <group ref={group}>
@@ -208,46 +207,88 @@ function useGhost(hull: React.RefObject<THREE.Group | null>, on: boolean, glb: b
 
 const LOX_COLOR = new THREE.Color('#8fd0ff')
 const CH4_COLOR = new THREE.Color('#ffae66')
-const liquid = (c: THREE.Color) => new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 0.55, roughness: 0.25, transparent: true, opacity: 0.85 })
-const shell = (c: THREE.Color) => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide })
+
+/** Lathe profile of a tank: cylinder of radius r from y0 to y1 closed by elliptical domes of height d. */
+function tankProfile(r: number, y0: number, y1: number, d: number, n = 10) {
+  const pts: THREE.Vector2[] = []
+  for (let i = 0; i <= n; i++) {
+    const a = (i / n) * (Math.PI / 2)
+    pts.push(new THREE.Vector2(Math.sin(a) * r, y0 + d - Math.cos(a) * d))
+  }
+  for (let i = 0; i <= n; i++) {
+    const a = (i / n) * (Math.PI / 2)
+    pts.push(new THREE.Vector2(Math.cos(a) * r, y1 - d + Math.sin(a) * d))
+  }
+  return pts
+}
+
+interface TankDef {
+  kind: 'lox' | 'ch4'
+  y0: number
+  y1: number
+}
 
 /**
- * Cut-away of the propellant tanks (approximate Block 3 layout: liquid oxygen aft, methane forward, the
- * booster's methane downcomer through the LOX tank, the ship's header tanks and Starlink stack), filled to
- * the live level.
+ * Tank layout fitted to the GLB's own bulkheads (model frame, y up, centred). Ship: LOX aft up to the common dome
+ * at y ≈ −6, methane to the forward dome, the 26-satellite payload bay at y 6.8–18.2. Booster: LOX up to the
+ * common dome at y ≈ +9.5, methane up to the hot-stage ring.
+ */
+const TANKS: Record<Vehicle, TankDef[]> = {
+  ship: [
+    { kind: 'lox', y0: -20.8, y1: -6 },
+    { kind: 'ch4', y0: -6, y1: 5.6 },
+  ],
+  booster: [
+    { kind: 'lox', y0: -27.2, y1: 9.5 },
+    { kind: 'ch4', y0: 9.5, y1: 32.8 },
+  ],
+}
+
+// faint tank walls so the liquid level reads clearly against them
+const shellMat = (c: THREE.Color) => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.045, depthWrite: false, side: THREE.DoubleSide })
+const liquidMat = (c: THREE.Color, plane: THREE.Plane) =>
+  new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 0.6, roughness: 0.3, transparent: true, opacity: 0.88, side: THREE.DoubleSide, clippingPlanes: [plane] })
+
+/**
+ * Cut-away of the propellant tanks: domed tanks fitted to the model, the booster's methane downcomer through
+ * the LOX tank, the ship's header tanks and Starlink stack. Each liquid is the full tank shape clipped by a
+ * plane at the live fill level, so domes fill and drain naturally.
  */
 function TankXray({ vehicle }: { vehicle: Vehicle }) {
   const replay = useReplay()
-  const L = vehicle === 'booster' ? BOOSTER_LEN : SHIP_LEN
-  const b = -L / 2
-  const R = 4.2
-  const tanks = useMemo(
-    () =>
-      vehicle === 'booster'
-        ? [
-            { kind: 'lox' as const, y0: b + 8, y1: b + 40 },
-            { kind: 'ch4' as const, y0: b + 40.6, y1: b + 64.5 },
-          ]
-        : [
-            { kind: 'lox' as const, y0: b + 5, y1: b + 17.5 },
-            { kind: 'ch4' as const, y0: b + 18, y1: b + 27 },
-          ],
-    [vehicle, b],
-  )
-  const mats = useMemo(() => ({ lox: liquid(LOX_COLOR), ch4: liquid(CH4_COLOR), loxShell: shell(LOX_COLOR), ch4Shell: shell(CH4_COLOR), sat: new THREE.MeshStandardMaterial({ color: '#9aa0a8', metalness: 0.6, roughness: 0.4 }) }), [])
-  const fills = useRef<(THREE.Mesh | null)[]>([])
+  const R = 4.25
+  const tanks = TANKS[vehicle]
+  const res = useMemo(() => {
+    const planes = tanks.map(() => new THREE.Plane())
+    return {
+      planes,
+      geoms: tanks.map((k) => new THREE.LatheGeometry(tankProfile(R, k.y0, k.y1, 1.6), 48)),
+      shells: { lox: shellMat(LOX_COLOR), ch4: shellMat(CH4_COLOR) },
+      liquids: tanks.map((k, i) => liquidMat(k.kind === 'lox' ? LOX_COLOR : CH4_COLOR, planes[i])),
+      solid: { lox: new THREE.MeshStandardMaterial({ color: LOX_COLOR, emissive: LOX_COLOR, emissiveIntensity: 0.45 }), ch4: new THREE.MeshStandardMaterial({ color: CH4_COLOR, emissive: CH4_COLOR, emissiveIntensity: 0.45 }) },
+      sat: new THREE.MeshStandardMaterial({ color: '#9aa0a8', metalness: 0.6, roughness: 0.4 }),
+    }
+  }, [tanks])
+  const root = useRef<THREE.Group>(null)
   const headers = useRef<(THREE.Mesh | null)[]>([])
   const sats = useRef<THREE.Group>(null)
+  const gl = useThree((s) => s.gl)
+  useEffect(() => {
+    gl.localClippingEnabled = true
+  }, [gl])
+  const tmp = useMemo(() => ({ n: new THREE.Vector3(), p: new THREE.Vector3() }), [])
   useFrame(() => {
     const t = useClock.getState().t
+    const g = root.current
+    if (!g) return
     const lv = propLevels(replay, vehicle, t)
+    // liquid settles towards the engines: keep everything below a plane normal to the body axis
+    tmp.n.set(0, 1, 0).transformDirection(g.matrixWorld)
     tanks.forEach((k, i) => {
-      const m = fills.current[i]
-      if (!m) return
-      const f = Math.max(0.002, k.kind === 'lox' ? lv.lox : lv.ch4)
-      const h = (k.y1 - k.y0) * f
-      m.scale.set(1, h, 1)
-      m.position.y = k.y0 + h / 2
+      const f = k.kind === 'lox' ? lv.lox : lv.ch4
+      const y = k.y0 + (k.y1 - k.y0) * Math.max(0.002, f)
+      tmp.p.set(0, y, 0).applyMatrix4(g.matrixWorld)
+      res.planes[i].setFromNormalAndCoplanarPoint(tmp.n.clone().negate(), tmp.p)
     })
     if (vehicle === 'ship') {
       const h = headerLevel(replay, t)
@@ -257,35 +298,31 @@ function TankXray({ vehicle }: { vehicle: Vehicle }) {
     }
   })
   return (
-    <group>
+    <group ref={root}>
       {tanks.map((k, i) => (
         <group key={k.kind}>
-          <mesh position={[0, (k.y0 + k.y1) / 2, 0]} material={k.kind === 'lox' ? mats.loxShell : mats.ch4Shell}>
-            <cylinderGeometry args={[R, R, k.y1 - k.y0, 40, 1, true]} />
-          </mesh>
-          <mesh ref={(el) => void (fills.current[i] = el)} material={k.kind === 'lox' ? mats.lox : mats.ch4}>
-            <cylinderGeometry args={[R - 0.1, R - 0.1, 1, 40]} />
-          </mesh>
+          <mesh geometry={res.geoms[i]} material={res.shells[k.kind]} renderOrder={6} />
+          <mesh geometry={res.geoms[i]} material={res.liquids[i]} scale={[0.985, 1, 0.985]} renderOrder={5} />
         </group>
       ))}
       {vehicle === 'booster' && (
-        <mesh position={[0, (tanks[0].y0 + tanks[1].y0) / 2, 0]} material={mats.ch4}>
-          <cylinderGeometry args={[0.55, 0.55, tanks[1].y0 - tanks[0].y0, 16]} />
+        <mesh position={[0, (TANKS.booster[0].y0 + TANKS.booster[1].y0) / 2 + 0.8, 0]} material={res.solid.ch4}>
+          <cylinderGeometry args={[0.55, 0.55, TANKS.booster[1].y0 - TANKS.booster[0].y0 - 1.6, 16]} />
         </mesh>
       )}
       {vehicle === 'ship' && (
         <>
           {/* LOX header in the nose, methane header inside the main LOX tank */}
-          <mesh ref={(el) => void (headers.current[0] = el)} position={[0, b + 45, 0]} material={mats.lox}>
-            <sphereGeometry args={[1.4, 24, 16]} />
+          <mesh ref={(el) => void (headers.current[0] = el)} position={[0, 20.6, 0]} material={res.solid.lox}>
+            <sphereGeometry args={[1.35, 24, 16]} />
           </mesh>
-          <mesh ref={(el) => void (headers.current[1] = el)} position={[0, b + 9, 0]} material={mats.ch4}>
+          <mesh ref={(el) => void (headers.current[1] = el)} position={[0, -15.5, 0]} material={res.solid.ch4}>
             <sphereGeometry args={[1.05, 24, 16]} />
           </mesh>
           <group ref={sats}>
             {Array.from({ length: replay.data.mission.payload?.count ?? 0 }, (_, i) => (
-              <mesh key={i} position={[0, b + 28.5 + i * 0.47, 0]} material={mats.sat}>
-                <boxGeometry args={[6.4, 0.38, 2.5]} />
+              <mesh key={i} position={[0, 7.05 + i * 0.435, 0]} material={res.sat}>
+                <boxGeometry args={[6.4, 0.36, 2.5]} />
               </mesh>
             ))}
           </group>
@@ -295,15 +332,41 @@ function TankXray({ vehicle }: { vehicle: Vehicle }) {
   )
 }
 
-/** Starlink dispenser ("PEZ") door on the leeward side: the panel slides up inside the hull to open the slot. */
+/** Alpha mask of a stadium ("oval": fully rounded ends) filling a w × h texture. */
+function stadiumMask(w: number, h: number) {
+  const c = document.createElement('canvas')
+  c.width = 512
+  c.height = Math.round((512 * h) / w)
+  const ctx = c.getContext('2d')!
+  ctx.fillStyle = '#000'
+  ctx.fillRect(0, 0, c.width, c.height)
+  ctx.fillStyle = '#fff'
+  ctx.beginPath()
+  ctx.roundRect(1, 1, c.width - 2, c.height - 2, c.height / 2)
+  ctx.fill()
+  return new THREE.CanvasTexture(c)
+}
+
+/** Starlink dispenser ("PEZ") door on the leeward side: an oval slot whose panel slides up inside the hull. */
 function PezDoor() {
   const replay = useReplay()
   const panel = useRef<THREE.Group>(null)
   const slot = useRef<THREE.Mesh>(null)
-  const H = 1.7
-  const R = 4.53
-  const theta = 7.4 / R
+  const W = 7.4
+  const H = 1.9
+  const R = 4.43 // hull radius of the model at the door
   const y = SHIP_LEN / 2 - 15.5
+  const res = useMemo(() => {
+    const mask = stadiumMask(W, H)
+    // densely segmented cylinder patch centred on −Z (three's theta 0 is +Z), so it hugs the curved hull
+    const patch = (r: number) => new THREE.CylinderGeometry(r, r, H, 48, 1, true, Math.PI - W / r / 2, W / r)
+    return {
+      hole: patch(R + 0.012),
+      door: patch(R + 0.03),
+      holeMat: new THREE.MeshBasicMaterial({ color: '#040506', alphaMap: mask, alphaTest: 0.5, side: THREE.DoubleSide }),
+      doorMat: new THREE.MeshStandardMaterial({ color: '#c9ccd0', metalness: 0.85, roughness: 0.35, alphaMap: mask, alphaTest: 0.5 }),
+    }
+  }, [])
   useFrame(() => {
     const k = pezDoor(replay, useClock.getState().t)
     if (panel.current) {
@@ -312,18 +375,11 @@ function PezDoor() {
     }
     if (slot.current) slot.current.visible = k > 0.01
   })
-  // three's cylinder theta 0 is +Z (belly); the door faces −Z
-  const start = Math.PI - theta / 2
   return (
     <group userData={{ inspect: 'ship' }}>
-      <mesh ref={slot} position={[0, y, 0]}>
-        <cylinderGeometry args={[R + 0.01, R + 0.01, H, 24, 1, true, start, theta]} />
-        <meshBasicMaterial color="#050608" side={THREE.DoubleSide} />
-      </mesh>
+      <mesh ref={slot} geometry={res.hole} material={res.holeMat} position={[0, y, 0]} />
       <group ref={panel} position={[0, y, 0]}>
-        <mesh material={steelMaterial()}>
-          <cylinderGeometry args={[R + 0.05, R + 0.05, H, 24, 1, true, start, theta]} />
-        </mesh>
+        <mesh geometry={res.door} material={res.doorMat} />
       </group>
     </group>
   )

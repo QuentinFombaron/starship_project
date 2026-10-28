@@ -101,5 +101,7 @@
       "publisher": "Spaceflight Now"
     }
   ],
-  "hasReplay": false
+  "hasReplay": false,
+  "heroImage": "/images/flights/flight-02.jpg",
+  "heroCredit": "Osunpokeh · CC BY-SA 4.0 · https://commons.wikimedia.org/wiki/File:Starship-IFT2-ascent_(close_cropped).jpg"
 }

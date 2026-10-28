@@ -8,7 +8,7 @@ import { fmtDate } from '../lib/format'
 export function FlightCard({ m }: { m: Mission }) {
   const img = m.heroImage ?? getMedia(m.id)[0]?.thumb ?? getMedia(m.id)[0]?.src
   return (
-    <Link to={`/flights/${m.id}`} className="group relative block overflow-hidden border border-line bg-neutral-950 transition-colors hover:border-white/60">
+    <Link to={`/flights/${m.id}`} title={m.heroCredit ? `Photo: ${m.heroCredit.split(' · ').slice(0, 2).join(' · ')}` : undefined} className="group relative block overflow-hidden border border-line bg-neutral-950 transition-colors hover:border-white/60">
       <div className="relative aspect-[16/10] overflow-hidden">
         <SafeImg
           src={img}

@@ -106,5 +106,7 @@
       "publisher": "NASASpaceflight"
     }
   ],
-  "hasReplay": false
+  "hasReplay": false,
+  "heroImage": "/images/flights/flight-01.jpg",
+  "heroCredit": "Jenny Hautmann · CC BY-SA 4.0 · https://commons.wikimedia.org/wiki/File:Space_X_booster_Full_Stack.jpg"
 }

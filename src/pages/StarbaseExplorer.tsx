@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { IMAGERY_CREDIT, MODEL_CREDIT } from '../scene/Starbase/imagery'
+import { STACK_YAW } from '../scene/Starbase/PadB'
 import { FACTORY, PAD1, WATER_LEVEL, localFromGeo, StarbaseSite } from '../scene/Starbase/Starbase'
 import { GlbOverride } from '../scene/vehicles/GlbOverride'
 import { Starship, SuperHeavy } from '../scene/vehicles/Vehicles'
@@ -25,8 +26,8 @@ const POIS: { id: string; label: string; text: string; target: [number, number, 
     id: 'chopsticks',
     label: 'Chopsticks',
     text: 'Mechazilla’s two arms stack the vehicles and catch returning boosters, and on future flights ships, out of the air.',
-    target: [5, 84, -17],
-    cam: [60, 96, 45],
+    target: [3, 138, -10],
+    cam: [70, 150, 60],
   },
   {
     id: 'olm',
@@ -147,12 +148,12 @@ export default function StarbaseExplorer() {
         </mesh>
         {showStack && (
           <>
-            <group position={[0, MOUNT_HEIGHT + BOOSTER_LEN / 2, 0]}>
+            <group position={[0, MOUNT_HEIGHT + BOOSTER_LEN / 2, 0]} rotation={[0, STACK_YAW, 0]}>
               <GlbOverride url="/models/super-heavy.glb" length={BOOSTER_LEN}>
                 <SuperHeavy />
               </GlbOverride>
             </group>
-            <group position={[0, MOUNT_HEIGHT + BOOSTER_LEN + SHIP_LEN / 2, 0]} rotation={[0, Math.PI / 2, 0]}>
+            <group position={[0, MOUNT_HEIGHT + BOOSTER_LEN + SHIP_LEN / 2, 0]} rotation={[0, STACK_YAW, 0]}>
               <GlbOverride url="/models/starship.glb" length={SHIP_LEN}>
                 <Starship />
               </GlbOverride>

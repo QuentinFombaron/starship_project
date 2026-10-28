@@ -103,5 +103,7 @@
       "publisher": "NASASpaceflight"
     }
   ],
-  "hasReplay": false
+  "hasReplay": false,
+  "heroImage": "/images/flights/flight-06.jpg",
+  "heroCredit": "SpaceX · All rights reserved, shown for non-commercial fan use · https://www.spacex.com/launches/starship-flight-6"
 }

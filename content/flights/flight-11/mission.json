@@ -111,5 +111,7 @@
       "publisher": "Wikipedia"
     }
   ],
-  "hasReplay": false
+  "hasReplay": false,
+  "heroImage": "/images/flights/flight-11.jpg",
+  "heroCredit": "Shujianyang (cropped) · CC BY-SA 4.0 · https://commons.wikimedia.org/wiki/File:Starship_lifted_off_from_Starbase_during_flight_test_11.jpg"
 }

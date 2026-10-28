@@ -13,13 +13,9 @@ export const useInspect = create<{
   set: (p: Partial<{ hover: string | null; pinned: string | null; x: number; y: number }>) => void
 }>((set) => ({ hover: null, pinned: null, x: 0, y: 0, set: (p) => set(p) }))
 
-/** Vehicle whose hull turns see-through to show the tanks (hovered or pinned). */
-export function xrayVehicle(s: { hover: string | null; pinned: string | null }): Vehicle | null {
-  const id = s.pinned ?? s.hover
-  if (!id) return null
-  if (id.startsWith('booster')) return 'booster'
-  if (id.startsWith('ship')) return 'ship'
-  return null
+/** Whether a vehicle's hull turns see-through to show its tanks: it is hovered or pinned. */
+export function xrayOn(s: { hover: string | null; pinned: string | null }, v: Vehicle) {
+  return !!(s.hover?.startsWith(v) || s.pinned?.startsWith(v))
 }
 
 /** Approximate Block 3 propellant capacities in tonnes (SpaceX has quoted ~3,650 t and ~1,600 t). */

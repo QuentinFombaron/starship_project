@@ -38,6 +38,7 @@ export function FlightDetail() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/50" />
         </div>
+        {m.heroImage && m.heroCredit && <PhotoCredit credit={m.heroCredit} />}
         <div className="relative mx-auto w-full max-w-[1400px] px-5 pb-16 md:px-10">
           <div className="label mb-4 flex flex-wrap items-center gap-3">
             <span>
@@ -254,5 +255,23 @@ export function FlightDetail() {
         </div>
       )}
     </>
+  )
+}
+
+/** "Author · licence · source URL" → a small attribution in the hero's corner (required by the CC licences). */
+function PhotoCredit({ credit }: { credit: string }) {
+  const parts = credit.split(' · ')
+  const url = parts.at(-1)?.startsWith('http') ? parts.pop() : undefined
+  const text = `Photo: ${parts.join(' · ')}`
+  return (
+    <div className="absolute bottom-3 right-4 z-10 max-w-[60%] text-right text-[10px] text-white/45">
+      {url ? (
+        <a href={url} target="_blank" rel="noreferrer" className="hover:text-white/80">
+          {text}
+        </a>
+      ) : (
+        text
+      )}
+    </div>
   )
 }

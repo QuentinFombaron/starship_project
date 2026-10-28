@@ -237,9 +237,9 @@ export function SurfaceCap({ origin, withTerrain = false, radius = 80_000 }: { o
   useFrame((state) => {
     mat.uniforms.time.value = state.clock.elapsedTime
     mat.uniforms.sunWorld.value.copy(live.sunDir)
-    // fade out from orbit, where the global sphere is accurate enough
+    // fade out on the way up: from tens of km the global sphere's sag no longer shows, while the cap's haze would wash out the view
     const alt = live.camera.length() - R_EARTH
-    mat.uniforms.opacity.value = 1 - THREE.MathUtils.smoothstep(alt, 120_000, 250_000)
+    mat.uniforms.opacity.value = 1 - THREE.MathUtils.smoothstep(alt, 30_000, 60_000)
   })
   return (
     <PadFrame origin={origin}>

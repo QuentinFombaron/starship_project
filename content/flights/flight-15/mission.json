@@ -10,7 +10,8 @@
     "position": {
       "lat": 25.9968,
       "lon": -97.15818
-    }
+    },
+    "bellyHeadingDeg": 197
   },
   "vehicles": {
     "booster": {
